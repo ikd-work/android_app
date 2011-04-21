@@ -15,7 +15,9 @@ public class SuccessActivity extends Activity {
         Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			TextView textView = (TextView)findViewById(R.id.Message);
+			TextView passView = (TextView)findViewById(R.id.Password);
 			textView.setText(extras.getCharSequence("NAME"));
+			passView.setText(extras.getCharSequence("PASS"));
 		}
     }
 

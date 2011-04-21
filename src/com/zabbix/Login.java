@@ -26,8 +26,11 @@ public class Login extends Activity {
         	public void onClick(View v) {
         		Intent intent = new Intent(Login.this, SuccessActivity.class);
         		EditText editText = (EditText)findViewById(R.id.account_name);
+        		EditText passText = (EditText)findViewById(R.id.password);
         		CharSequence text = editText.getText();
+        		CharSequence pass = passText.getText();
         		intent.putExtra("NAME", text);
+        		intent.putExtra("PASS", pass);
         		startActivityForResult(intent, SHOW_EDITOR);
         	}
         });
