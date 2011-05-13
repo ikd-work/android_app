@@ -218,9 +218,9 @@ public class ZabbixApiAccess {
 		}
 		
 	}
-	public ArrayList<String> getHostList(String authKey, String filter)
+	public ArrayList<Host> getHostList(String authKey, String filter)
 	{
-		ArrayList<String> hostList = new ArrayList<String>();
+		ArrayList<Host> hostList = new ArrayList<Host>();
 		
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
@@ -239,12 +239,14 @@ public class ZabbixApiAccess {
 			JSONArray resultObject = response.getJSONArray("result");
 			
 			int count = resultObject.length();
-			
+			Host host = new Host();
 			for (int i=0; i<count; i++)
 			{
-				hostList.add(resultObject.getJSONObject(i).getString("host"));
-			}
-			
+				host.setHostId(resultObject.getJSONObject(i).getString("hostid"));
+				host.setHostName(resultObject.getJSONObject(i).getString("host"));
+				//hostList.add(resultObject.getJSONObject(i).getString("host"));
+				hostList.add(host);
+			}			
 			return hostList;
 			
 		} catch (JSONException e) {
