@@ -4,6 +4,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+	<TextView  
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:text="Hostname"
+    />
+
     <EditText
     	android:id="@+id/Hostname"
     	android:layout_width="fill_parent"
@@ -18,7 +24,9 @@
     <EditText
     	android:id="@+id/account_name"
     	android:layout_height="wrap_content"
-    	android:layout_width="fill_parent"/>
+    	android:layout_width="fill_parent"
+    	android:hint="Input login id"
+    />
 	<TextView  
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" 
@@ -29,7 +37,9 @@
     	android:id="@+id/password"
     	android:layout_height="wrap_content"
     	android:layout_width="fill_parent"
-    	android:password="true"/>
+    	android:password="true"
+    	android:hint="Input password"
+    />
     <Button
     	android:id="@+id/login_button"
     	android:layout_width="wrap_content"

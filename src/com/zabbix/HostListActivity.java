@@ -33,7 +33,7 @@ public class HostListActivity extends Activity {
 			zabbix.setHttpPost(uri);
 			//zabbix.setMethod("host.get");
 			
-			ArrayList<String> hostList = zabbix.getHostList(extras.getCharSequence("AUTH_KEY").toString(), "all");
+			ArrayList<Host> hostList = zabbix.getHostList(extras.getCharSequence("AUTH_KEY").toString(), "all");
 			
 		    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.host, hostList);
 		    
