@@ -24,8 +24,10 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -36,11 +38,19 @@ import android.widget.TextView;
 public class LoginActivity extends Activity {
 	
 	private static final int SHOW_EDITOR = 0;
+	private static final String PREFERENCE_KEY = "AuthData";
+	SharedPreferences authData;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_LEFT_ICON);
+        authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
+        if (authData.getString("AuthToken", "No Data") != "No Data"){
+        	Intent intent = new Intent(this,HostListActivity.class);
+        	startActivity(intent);
+        }
+        
         setContentView(R.layout.login);
         getWindow().setFeatureDrawableResource( Window.FEATURE_LEFT_ICON, R.drawable.zabbix );
         setTitle(R.string.title_login);
@@ -58,27 +68,22 @@ public class LoginActivity extends Activity {
         		ZabbixApiAccess zabbix = new ZabbixApiAccess();
         		zabbix.setHost(host.toString());
         		String uri = zabbix.makeUri(host.toString());
-        	//	zabbix.setUri(uri);
         		zabbix.setHttpPost(uri);
         		zabbix.setBasicJSONParams();
         		zabbix.setMethod("user.authenticate");
-        		Log.e("ZABBIXAPIURI",zabbix.getUri());
-        		Log.e("ZABBIXAPIMETHOD",zabbix.getMethod());
-        		Log.e("ZABBIXAPIJSON",zabbix.getJsonObject().toString());
         		String auth_key = zabbix.zabbixAuthenticate(account_name.toString(), pass.toString());
         		
+        		authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
+        		authData.edit().putString("AuthToken", auth_key).commit();
+        		authData.edit().putString("URI", uri).commit();
         		
-        	//	String auth_key = null;
-			/*	try {
-					auth_key = getAuthKey(host, account_name, pass);
-				} catch (UnsupportedEncodingException e) {
-					// TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
-					e.printStackTrace();
-				}
-				*/
-        		intent.putExtra("AUTH_KEY", auth_key);
-        		intent.putExtra("PASS", pass);
-        		intent.putExtra("HOSTNAME", host);
+        		if ( auth_key != null ){
+        			
+        		}
+ 
+ //       		intent.putExtra("AUTH_KEY", auth_key);
+ //       		intent.putExtra("PASS", pass);
+ //       		intent.putExtra("HOSTNAME", host);
         		startActivityForResult(intent, SHOW_EDITOR);
         	}
         });
