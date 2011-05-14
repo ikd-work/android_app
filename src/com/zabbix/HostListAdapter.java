@@ -29,6 +29,16 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 			view = inflater.inflate(R.layout.host, null);
 		}
 		
+		Host host = this.getItem(position);
+		
+		if( host != null){
+			String hostid = host.getHostId();
+			String hostname = host.getHostName();
+			hostIdView = (TextView)view.findViewById(R.id.host_id);
+			hostNameView = (TextView)view.findViewById(R.id.host_name);
+			hostIdView.setText(hostid);
+			hostNameView.setText(hostname);
+		}
 		return view;
 	}
 }

@@ -34,8 +34,12 @@ public class HostListActivity extends Activity {
 			//zabbix.setMethod("host.get");
 			
 			ArrayList<Host> hostList = zabbix.getHostList(extras.getCharSequence("AUTH_KEY").toString(), "all");
+			Log.e("arraylist1",hostList.get(0).getHostName());
+			Log.e("arraylist2",hostList.get(1).getHostName());
+			Log.e("arraylist3",hostList.get(2).getHostName());
 			
-		    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.host, hostList);
+			HostListAdapter adapter = new HostListAdapter(this, hostList);
+		   // ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.host, hostList);
 		    
 		    ListView list= (ListView)findViewById(R.id.hostlistview);
 		    

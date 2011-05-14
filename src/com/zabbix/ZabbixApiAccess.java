@@ -239,12 +239,15 @@ public class ZabbixApiAccess {
 			JSONArray resultObject = response.getJSONArray("result");
 			
 			int count = resultObject.length();
-			Host host = new Host();
+			
 			for (int i=0; i<count; i++)
 			{
+				Host host = new Host();
 				host.setHostId(resultObject.getJSONObject(i).getString("hostid"));
 				host.setHostName(resultObject.getJSONObject(i).getString("host"));
 				//hostList.add(resultObject.getJSONObject(i).getString("host"));
+				Log.e("hostID",host.getHostId());
+				Log.e("hostName",host.getHostName());
 				hostList.add(host);
 			}			
 			return hostList;
