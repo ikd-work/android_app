@@ -29,7 +29,6 @@ public class ZabbixApiAccess {
 	private String uri;
 	private String host;
 	private HttpPost httpPost;
-	private HttpRequest httpRequest;
 	private JSONObject jsonObject = new JSONObject();
 	
 	public void setHost(String host)
@@ -67,8 +66,6 @@ public class ZabbixApiAccess {
 	{
 		httpPost = new HttpPost(uri);
 		httpPost.setHeader("Content-type", CONTENT_TYPE);
-		//Log.e("getURI",httpPost.getHeaders(name));
-			
 	}
 	
 	public void setBasicJSONParams()
@@ -144,12 +141,10 @@ public class ZabbixApiAccess {
 		DefaultHttpClient httpClient = new DefaultHttpClient();
     	try {
 			HttpResponse httpResponse = httpClient.execute(httpPost);
-			Log.e("HTTPPOST", EntityUtils.toString(httpPost.getEntity()));
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK)
 			{
 				String entity = EntityUtils.toString(httpResponse.getEntity());
-				Log.e("Response", entity);
 				JSONObject jsonEntity = new JSONObject(entity);
 				return jsonEntity.getString("result");
 				

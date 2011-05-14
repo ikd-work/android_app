@@ -81,9 +81,6 @@ public class LoginActivity extends Activity {
         			
         		}
  
- //       		intent.putExtra("AUTH_KEY", auth_key);
- //       		intent.putExtra("PASS", pass);
- //       		intent.putExtra("HOSTNAME", host);
         		startActivityForResult(intent, SHOW_EDITOR);
         	}
         });
@@ -91,74 +88,6 @@ public class LoginActivity extends Activity {
     }
     
     
-     /**
-     * @param host
-     * @param account_name
-     * @param pass
-     * @return
-     * @throws UnsupportedEncodingException
-     */
- /*   private String getAuthKey(CharSequence host, CharSequence account_name, CharSequence pass) throws UnsupportedEncodingException {
-    	Uri.Builder uriBuilder = new Uri.Builder();
-    	uriBuilder.scheme("http");
-    	uriBuilder.authority(host.toString());
-    	uriBuilder.path("/zabbix/api_jsonrpc.php");
- 
-    	String uri = Uri.decode(uriBuilder.build().toString());
-    	
-    	HttpPost httpPost = new HttpPost(uri);
-       	httpPost.setHeader("Content-type", "application/json-rpc");
- 
-       	JSONObject jsonObj = new JSONObject();
-       	
-       	
-       	try {
-       		jsonObj.put("jsonrpc", "2.0");
-			jsonObj.put("id", "1");
-			jsonObj.put("method", "user.authenticate");
-			JSONObject params = new JSONObject();
-			params.put("user", account_name);
-			params.put("password", pass);
-			jsonObj.put("params", params);
-			Log.e("jsonObj",jsonObj.toString());
-		} catch (JSONException e1) {
-			// TODO 自動生成された catch ブロック
-			e1.printStackTrace();
-		}
-		StringEntity stringEntity = new StringEntity(jsonObj.toString());
-		httpPost.setEntity(stringEntity);
-		
-    	DefaultHttpClient httpClient = new DefaultHttpClient();
-    	try {
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			int statusCode = httpResponse.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK)
-			{
-				String entity = EntityUtils.toString(httpResponse.getEntity());
-				Log.e("Response", entity);
-				JSONObject jsonEntity = new JSONObject(entity);
-				return jsonEntity.getString("result");
-				
-			}else
-			{
-				return "error";
-			}
-			//return EntityUtils.toString(httpResponse.getEntity());
-    	} catch (ClientProtocolException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return "error";
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return "error";
-		} catch (JSONException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return "error";
-		}
-    	
-    }*/
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
