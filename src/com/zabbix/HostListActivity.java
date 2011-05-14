@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,5 +38,26 @@ public class HostListActivity extends Activity {
 		    
 		list.setAdapter(adapter);
     }
+    
+    public boolean onCreateOptionsMenu(Menu menu){
+    	boolean ret = super.onCreateOptionsMenu(menu);
+    	
+    	menu.add(0, Menu.FIRST, Menu.NONE,R.string.logout);
+    	
+    	return ret;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item){
+    	if( item.getItemId() == 1){
+    		authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
+    		authData.edit().clear().commit();
+    		
+    		Intent intent = new Intent(HostListActivity.this,LoginActivity.class);
+    		startActivity(intent);
+    	}
+    	
+    	return super.onOptionsItemSelected(item);
+    }
+    
 
 }
