@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,6 +39,16 @@ public class HostListActivity extends Activity {
 		ListView list= (ListView)findViewById(R.id.hostlistview);
 		    
 		list.setAdapter(adapter);
+		
+		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				ListView list = (ListView) parent;
+				Host host = (Host) list.getItemAtPosition(position);
+				Intent intent = new Intent(HostListActivity.this,HostDetailActivity.class);
+				intent.putExtra("hostid", host.getHostId());
+				startActivity(intent);
+			}
+		});
     }
     
     public boolean onCreateOptionsMenu(Menu menu){

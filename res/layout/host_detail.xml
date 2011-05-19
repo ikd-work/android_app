@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
->
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
 	<TextView 
-		android:id="@+id/host_id"
+		android:id="@+id/host_detail"
 		android:textSize="20sp"
 		android:layout_gravity="left"
 		android:layout_width="wrap_content"
@@ -13,7 +12,7 @@
 	/>
 
 	<TextView
-		android:id="@+id/host_name"
+		android:id="@+id/host_detail_ip"
 		android:width="200px"
 		android:textSize="20sp"
 		android:layout_gravity="right"

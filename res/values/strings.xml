@@ -4,6 +4,7 @@
     <string name="app_name">Zabbix Management</string>
     <string name="title_login">Login page</string>
     <string name="title_host_list">Host List</string>
+    <string name="title_host_detail">Host Detail</string>
     <string name="empty">No Host...</string>
     <string name="logout">Logout</string>
 </resources>
