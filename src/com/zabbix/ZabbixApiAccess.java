@@ -180,8 +180,13 @@ public class ZabbixApiAccess {
 			StringEntity stringEntity = new StringEntity(jsonObject.toString());
 			httpPost.setEntity(stringEntity);
 			DefaultHttpClient httpClient = new DefaultHttpClient();
+			Log.e("test",authKey);
+			if(authKey == "error") {
+				Log.e("return","return");
+				return jsonEntity;
+			}
 			HttpResponse httpResponse = httpClient.execute(httpPost);
-			
+			Log.e("httpRes",Integer.toString(httpResponse.getStatusLine().getStatusCode()));
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK)
 			{
@@ -231,22 +236,27 @@ public class ZabbixApiAccess {
 				subParams.put("filter", subsubParams);
 			}
 			response = this.apiAccess(authKey, subParams);
-			JSONArray resultObject = response.getJSONArray("result");
+			if (response != null) {
+				JSONArray resultObject = response.getJSONArray("result");
 			
-			int count = resultObject.length();
+				int count = resultObject.length();
 			
-			for (int i=0; i<count; i++)
-			{
-				Host host = new Host();
-				host.setHostId(resultObject.getJSONObject(i).getString("hostid"));
-				host.setHostName(resultObject.getJSONObject(i).getString("host"));
-				//hostList.add(resultObject.getJSONObject(i).getString("host"));
-				Log.e("hostID",host.getHostId());
-				Log.e("hostName",host.getHostName());
-				hostList.add(host);
-			}			
-			return hostList;
-			
+				for (int i=0; i<count; i++)
+				{
+					Host host = new Host();
+					host.setHostId(resultObject.getJSONObject(i).getString("hostid"));
+					host.setHostName(resultObject.getJSONObject(i).getString("host"));
+					host.setHostStatus(resultObject.getJSONObject(i).getString("status"));
+					host.setHostDns(resultObject.getJSONObject(i).getString("dns"));
+					host.setHostIp(resultObject.getJSONObject(i).getString("ip"));
+					//hostList.add(resultObject.getJSONObject(i).getString("host"));
+					Log.e("hostID",host.getHostId());
+					Log.e("hostName",host.getHostName());
+					hostList.add(host);
+				}			
+				return hostList;
+			}
+			return null;
 		} catch (JSONException e) {
 			// TODO Ž©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
 			e.printStackTrace();

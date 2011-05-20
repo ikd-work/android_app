@@ -34,6 +34,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 	
@@ -77,11 +78,16 @@ public class LoginActivity extends Activity {
         		authData.edit().putString("AuthToken", auth_key).commit();
         		authData.edit().putString("URI", uri).commit();
         		
-        		if ( auth_key != null ){
+        		if ( auth_key != "error" ){
+        			Log.e("auth_keyOK",auth_key);
+        			startActivityForResult(intent, SHOW_EDITOR);
         			
+        		}else {
+        			Log.e("auth_keyNG",auth_key);
+        			Toast.makeText(LoginActivity.this,"ÉçÉOÉCÉìÇ…é∏îsÇµÇ‹ÇµÇΩÅI",Toast.LENGTH_LONG).show();
         		}
  
-        		startActivityForResult(intent, SHOW_EDITOR);
+        		
         	}
         });
         

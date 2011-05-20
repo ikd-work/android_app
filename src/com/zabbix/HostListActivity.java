@@ -34,21 +34,27 @@ public class HostListActivity extends Activity {
 		ZabbixApiAccess zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
 		ArrayList<Host> hostList = zabbix.getHostList(authToken, "all");
-			
-		HostListAdapter adapter = new HostListAdapter(this, hostList);		    
-		ListView list= (ListView)findViewById(R.id.hostlistview);
-		    
-		list.setAdapter(adapter);
 		
-		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				ListView list = (ListView) parent;
-				Host host = (Host) list.getItemAtPosition(position);
-				Intent intent = new Intent(HostListActivity.this,HostDetailActivity.class);
-				intent.putExtra("hostid", host.getHostId());
-				startActivity(intent);
-			}
-		});
+		if( hostList != null) {
+			HostListAdapter adapter = new HostListAdapter(this, hostList);		    
+			ListView list= (ListView)findViewById(R.id.hostlistview);
+		    
+			list.setAdapter(adapter);
+		
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					ListView list = (ListView) parent;
+					Host host = (Host) list.getItemAtPosition(position);
+					Intent intent = new Intent(HostListActivity.this,HostDetailActivity.class);
+					intent.putExtra("hostid", host.getHostId());
+					intent.putExtra("hostname", host.getHostName());
+					intent.putExtra("hoststatus", host.getHostStatus());
+					intent.putExtra("hostdns", host.getHostDns());
+					intent.putExtra("hostip", host.getHostIp());
+					startActivity(intent);
+				}
+			});
+		}
     }
     
     public boolean onCreateOptionsMenu(Menu menu){

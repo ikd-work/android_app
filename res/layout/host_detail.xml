@@ -1,23 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
-	<TextView 
-		android:id="@+id/host_detail"
-		android:textSize="20sp"
-		android:layout_gravity="left"
-		android:layout_width="wrap_content"
-		android:layout_height="fill_parent"
-	/>
+	<TableLayout
+		android:padding="5dip"
+		android:stretchColumns="1"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<TableRow>
+			<TextView 
+				android:layout_gravity="left"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Host ID"
+			/>
+			<TextView 
+				android:id="@+id/host_detail_id"
+				android:layout_gravity="right"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+			/>
+		</TableRow>
+		<TableRow>
+			<TextView 
+				android:layout_gravity="left"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Host Name"
+			/>
+			<TextView 
+				android:id="@+id/host_detail_name"
+				android:layout_gravity="right"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+			/>
+		</TableRow>
+		<TableRow>
+			<TextView 
+				android:layout_gravity="left"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Host Status"
+			/>
 
-	<TextView
-		android:id="@+id/host_detail_ip"
-		android:width="200px"
-		android:textSize="20sp"
-		android:layout_gravity="right"
-		android:gravity="right"
-		android:layout_width="wrap_content"
-		android:layout_height="fill_parent"
-	/>
+			<TextView 
+				android:id="@+id/host_detail_status"
+				android:layout_gravity="right"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+			/>
+		</TableRow>
+		<TableRow>
+			<TextView 
+				android:layout_gravity="left"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Host DNS Name"
+			/>
+
+			<TextView 
+				android:id="@+id/host_detail_dns"
+				android:layout_gravity="right"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+			/>
+		</TableRow>
+		<TableRow>
+			<TextView 
+				android:layout_gravity="left"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Host IP"
+			/>
+
+			<TextView
+				android:id="@+id/host_detail_ip"
+				android:layout_gravity="right"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+			/>
+		</TableRow>
+	</TableLayout>
 </LinearLayout>
