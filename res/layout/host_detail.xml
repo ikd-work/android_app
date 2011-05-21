@@ -39,6 +39,7 @@
 		</TableRow>
 		<TableRow>
 			<TextView 
+				android:id="@+id/host_detail_status_title"
 				android:layout_gravity="left"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

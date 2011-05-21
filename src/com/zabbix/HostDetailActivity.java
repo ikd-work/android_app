@@ -3,7 +3,9 @@ package com.zabbix;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 public class HostDetailActivity extends Activity{
@@ -37,7 +39,17 @@ public class HostDetailActivity extends Activity{
         TextView textViewHostIp = (TextView)this.findViewById(R.id.host_detail_ip);
         textViewHostId.setText(hostID);
         textViewHostName.setText(hostName);
-        textViewHostStatus.setText(hostStatus);
+        
+        if (hostStatus.equals("1")) {
+        	textViewHostStatus.setText("–³Œø");
+        	textViewHostStatus.setTextColor(Color.RED);
+        	TextView textViewTitle = (TextView)this.findViewById(R.id.host_detail_status_title);
+        	textViewTitle.setTextColor(Color.RED);
+        }
+        else {
+        	textViewHostStatus.setText("—LŒø");
+        }
+        
         textViewHostDns.setText(hostDns);
         textViewHostIp.setText(hostIp);
       
