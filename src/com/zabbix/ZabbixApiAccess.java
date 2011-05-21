@@ -182,16 +182,16 @@ public class ZabbixApiAccess {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			Log.e("test",authKey);
 			if(authKey == "error") {
-				Log.e("return","return");
 				return jsonEntity;
 			}
+	//		Log.e("Req",EntityUtils.toString(httpPost.getEntity()));
 			HttpResponse httpResponse = httpClient.execute(httpPost);
-			Log.e("httpRes",Integer.toString(httpResponse.getStatusLine().getStatusCode()));
+	//		Log.e("httpRes",Integer.toString(httpResponse.getStatusLine().getStatusCode()));
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK)
 			{
 				String entity = EntityUtils.toString(httpResponse.getEntity());
-				Log.e("Response", entity);
+//				Log.e("Response", entity);
 				jsonEntity = new JSONObject(entity);
 				return jsonEntity;
 				
@@ -263,6 +263,82 @@ public class ZabbixApiAccess {
 			return hostList;
 		}
 		
+	}
+	public ArrayList<Item> getItemList(String authKey, String hostid, int num) {
+		
+		ArrayList<Item> itemList = new ArrayList<Item>();
+		
+		JSONObject subParams = new JSONObject();
+		JSONObject subsubParams = new JSONObject();
+		JSONObject response = null;
+		
+		try {
+			this.jsonObject.put("method", "item.get");
+			subParams.put("output","extend");
+			subsubParams.put("hostid",hostid);
+			subParams.put("filter", subsubParams);
+			subParams.put("limit", num);
+			
+			response = this.apiAccess(authKey, subParams);
+			
+			if(response != null) {
+				JSONArray resultObject = response.getJSONArray("result");
+				
+				int count = resultObject.length();
+			
+				for (int i=0; i<count; i++)
+				{
+					Item item = new Item();
+					item.setItemId(resultObject.getJSONObject(i).getString("itemid"));
+					item.setItemDescription(resultObject.getJSONObject(i).getString("description"));
+					item.setItemKey(resultObject.getJSONObject(i).getString("key_"));
+					
+					item.setItemValue(this.getItemValue(authKey,item.getItemId()));
+					//hostList.add(resultObject.getJSONObject(i).getString("host"));
+					itemList.add(item);
+				}			
+			}
+			return itemList;
+		} catch (JSONException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return itemList;
+		}
+		
+		
+	}
+	
+	private String getItemValue(String authKey, String itemid) {
+		JSONObject subParams = new JSONObject();
+		JSONObject subsubParams = new JSONObject();
+		JSONObject response = null;
+		String value = "";
+		
+		try {
+			this.jsonObject.put("method", "history.get");
+			subParams.put("output", "extend");
+			subsubParams.put("itemid", itemid);
+			subParams.put("filter", subsubParams);
+			subParams.put("limit", 1);
+			subParams.put("sortfield", "clock");
+			subParams.put("sortorder", "DESC");
+			response = this.apiAccess(authKey, subParams);
+			if(response != null & !response.getString("result").equals("[]")) {
+				JSONArray resultObject = response.getJSONArray("result");
+	
+				int count = resultObject.length();
+				for (int i=0; i<count; i++)
+				{
+					value = resultObject.getJSONObject(i).getString("value");
+				}
+			
+			}
+			return value;
+		} catch (JSONException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return value;
+		}
 	}
 
 }

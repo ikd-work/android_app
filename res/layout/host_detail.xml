@@ -84,4 +84,14 @@
 			/>
 		</TableRow>
 	</TableLayout>
+	<TextView
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="#778899"
+		android:text="Latest Data"
+	/>
+	<ListView
+	 	android:id="@+id/itemlistview"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content"/>
 </LinearLayout>

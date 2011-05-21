@@ -1,11 +1,14 @@
 package com.zabbix;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class HostDetailActivity extends Activity{
@@ -31,7 +34,10 @@ public class HostDetailActivity extends Activity{
         String authToken = authData.getString("AuthToken", "No Data");
         String uri = authData.getString("URI", "No Data");
         
-        
+        ZabbixApiAccess zabbix = new ZabbixApiAccess();
+		zabbix.setHttpPost(uri);
+		ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, 10);
+              
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
         TextView textViewHostName = (TextView)this.findViewById(R.id.host_detail_name);
         TextView textViewHostStatus = (TextView)this.findViewById(R.id.host_detail_status);
@@ -53,6 +59,12 @@ public class HostDetailActivity extends Activity{
         textViewHostDns.setText(hostDns);
         textViewHostIp.setText(hostIp);
       
+		if( itemList != null) {
+			ItemListAdapter adapter = new ItemListAdapter(this, itemList);		    
+			ListView list= (ListView)findViewById(R.id.itemlistview);
+		    
+			list.setAdapter(adapter);
+		}
         
     }
 
