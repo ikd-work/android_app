@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -64,6 +66,17 @@ public class HostDetailActivity extends Activity{
 			ListView list= (ListView)findViewById(R.id.itemlistview);
 		    
 			list.setAdapter(adapter);
+			
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					ListView list = (ListView) parent;
+					Item item = (Item) list.getItemAtPosition(position);
+					Intent intent = new Intent(HostDetailActivity.this,MonitorActivity.class);
+					intent.putExtra("itemid", item.getItemId());
+					intent.putExtra("itemdescription", item.getItemDescription());
+					startActivity(intent);
+				}
+			});
 		}
         
     }
