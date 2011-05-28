@@ -26,7 +26,7 @@ public class HostDetailActivity extends Activity{
         
         Intent intent = getIntent();
         String hostID = intent.getStringExtra("hostid");
-        String hostName = intent.getStringExtra("hostname");
+        final String hostName = intent.getStringExtra("hostname");
         String hostStatus = intent.getStringExtra("hoststatus");
         String hostDns = intent.getStringExtra("hostdns");
         String hostIp = intent.getStringExtra("hostip");
@@ -74,6 +74,7 @@ public class HostDetailActivity extends Activity{
 					Intent intent = new Intent(HostDetailActivity.this,MonitorActivity.class);
 					intent.putExtra("itemid", item.getItemId());
 					intent.putExtra("itemdescription", item.getItemDescription());
+					intent.putExtra("hostName", hostName);
 					startActivity(intent);
 				}
 			});

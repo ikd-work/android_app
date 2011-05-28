@@ -26,12 +26,14 @@ public class LineChartView extends View {
 	
 	public LineChartView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		//ディスプレイサイズ取得
 		WindowManager wm = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE));
 		Display disp = wm.getDefaultDisplay();
 		width = disp.getWidth();
-		width = width - 10;
 		height = disp.getHeight();
-		height = height / 2;
+		//グラフ描画サイズ計算
+		width = width - 10;
+		height = height - 80;
 	}
 	
 	@Override

@@ -184,14 +184,14 @@ public class ZabbixApiAccess {
 			if(authKey == "error") {
 				return jsonEntity;
 			}
-	//		Log.e("Req",EntityUtils.toString(httpPost.getEntity()));
+			Log.e("Req",EntityUtils.toString(httpPost.getEntity()));
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 	//		Log.e("httpRes",Integer.toString(httpResponse.getStatusLine().getStatusCode()));
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK)
 			{
 				String entity = EntityUtils.toString(httpResponse.getEntity());
-//				Log.e("Response", entity);
+				Log.e("Response", entity);
 				jsonEntity = new JSONObject(entity);
 				return jsonEntity;
 				
@@ -308,6 +308,52 @@ public class ZabbixApiAccess {
 		
 	}
 	
+	public ArrayList<HistoryData> getHistoryData(String authKey, String itemID, TimeRange timerange ) {
+
+		ArrayList<HistoryData> historyDataList = new ArrayList<HistoryData>();
+		
+		JSONObject subParams = new JSONObject();
+		JSONObject subsubParams = new JSONObject();
+		JSONObject response = null;
+		
+		try {
+			this.jsonObject.put("method", "history.get");
+			subParams.put("output","extend");
+			subsubParams.put("itemid",itemID);
+			subParams.put("filter", subsubParams);
+			subParams.put("time_from", timerange.getTimeFrom());
+			subParams.put("time_till", timerange.getTimeTill());
+			
+			response = this.apiAccess(authKey, subParams);
+			
+			if(response != null) {
+				JSONArray resultObject = response.getJSONArray("result");
+				
+				int count = resultObject.length();
+			    
+				for (int i=0; i<count; i++)
+				{
+					HistoryData historyData = new HistoryData();
+					historyData.setUnixtime(resultObject.getJSONObject(i).getString("clock"));
+					historyData.setValue(resultObject.getJSONObject(i).getString("value"));
+					
+					Log.e("Clock",historyData.getUnixtime());
+					Log.e("VaLue",historyData.getValue());
+					//hostList.add(resultObject.getJSONObject(i).getString("host"));
+					historyDataList.add(historyData);
+				}			
+			}
+			return historyDataList;
+		} catch (JSONException e) {
+			// TODO Ž©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			e.printStackTrace();
+			return historyDataList;
+		}
+
+		
+		
+	}
+	
 	private String getItemValue(String authKey, String itemid) {
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
@@ -340,5 +386,6 @@ public class ZabbixApiAccess {
 			return value;
 		}
 	}
+
 
 }
