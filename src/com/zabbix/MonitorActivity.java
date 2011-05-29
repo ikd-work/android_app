@@ -1,5 +1,7 @@
 package com.zabbix;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -101,6 +103,10 @@ public class MonitorActivity extends Activity {
 	    rangeAxis.setAxisLinePaintType(new SolidColor(Color.WHITE));
 	    rangeAxis.setTickLabelPaintType(new SolidColor(Color.CYAN));
 	    rangeAxis.setLabelPaintType(new SolidColor(Color.CYAN));
+	    NumberFormat nf = NumberFormat.getInstance();
+	    DecimalFormat df = (DecimalFormat)nf;
+	    df.applyPattern("###,###.#");
+	    rangeAxis.setNumberFormatOverride(df);
 	    plot.setDomainGridlinePaintType(new SolidColor(Color.DKGRAY));
 	    plot.setRangeGridlinePaintType(new SolidColor(Color.DKGRAY));
 	    chart.setBorderPaintType(new SolidColor(Color.DKGRAY));
