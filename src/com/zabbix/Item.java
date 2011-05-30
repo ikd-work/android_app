@@ -1,10 +1,13 @@
 package com.zabbix;
 
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Serializable {
 	private String itemId;
 	private String itemDescription;
 	private String itemKey;
 	private String itemValue;
+	private String itemValueType;
 	
 	public Item() {
 		itemId = "";
@@ -29,6 +32,10 @@ public class Item {
 		itemValue = itemvalue;
 	}
 	
+	public void setItemValueType(String itemvaluetype) {
+		itemValueType = itemvaluetype;
+	}
+	
 	public String getItemId() {
 		return itemId;
 	}
@@ -43,6 +50,10 @@ public class Item {
 	
 	public String getItemValue() {
 		return itemValue;
+	}
+	
+	public String getItemValueType() {
+		return itemValueType;
 	}
 	
 }

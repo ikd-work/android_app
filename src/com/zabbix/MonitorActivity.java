@@ -50,7 +50,8 @@ public class MonitorActivity extends Activity {
         setTitle(R.string.title_host_detail);
 
         Intent intent = getIntent();
-        String itemID = intent.getStringExtra("itemid");
+        Item item = (Item)intent.getSerializableExtra("item");
+        //String itemID = intent.getStringExtra("itemid");
         String itemdescription = intent.getStringExtra("itemdescription");
         String hostName = intent.getStringExtra("hostName");
         
@@ -66,7 +67,7 @@ public class MonitorActivity extends Activity {
         
         ZabbixApiAccess zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, itemID, timerange);        
+		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);        
      
         TextView textViewMonitor = (TextView)this.findViewById(R.id.monitor_name);
         textViewMonitor.setText(hostName);
@@ -79,7 +80,11 @@ public class MonitorActivity extends Activity {
         for(int i=0; i < count; i++) {
         	TimeRange t = new TimeRange();
         	t.setTimeTill(historyDataList.get(i).getUnixtime());
-        	series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
+        	if(item.getItemValueType().equals("3")) {
+        		series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
+        	}else if (item.getItemValueType().equals("0")) {
+        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
+        	}
         }
         
         TimeSeriesCollection dataset = new TimeSeriesCollection();

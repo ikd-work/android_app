@@ -292,8 +292,8 @@ public class ZabbixApiAccess {
 					item.setItemId(resultObject.getJSONObject(i).getString("itemid"));
 					item.setItemDescription(resultObject.getJSONObject(i).getString("description"));
 					item.setItemKey(resultObject.getJSONObject(i).getString("key_"));
-					
-					item.setItemValue(this.getItemValue(authKey,item.getItemId()));
+					item.setItemValueType(resultObject.getJSONObject(i).getString("value_type"));
+					item.setItemValue(this.getItemValue(authKey,item));
 					//hostList.add(resultObject.getJSONObject(i).getString("host"));
 					itemList.add(item);
 				}			
@@ -308,7 +308,7 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	public ArrayList<HistoryData> getHistoryData(String authKey, String itemID, TimeRange timerange ) {
+	public ArrayList<HistoryData> getHistoryData(String authKey, Item item, TimeRange timerange ) {
 
 		ArrayList<HistoryData> historyDataList = new ArrayList<HistoryData>();
 		
@@ -319,10 +319,10 @@ public class ZabbixApiAccess {
 		try {
 			this.jsonObject.put("method", "history.get");
 			subParams.put("output","extend");
-			subParams.put("itemids", itemID);
+			subParams.put("itemids", item.getItemId());
 			subParams.put("time_from", timerange.getTimeFrom());
 			subParams.put("time_till", timerange.getTimeTill());
-			
+			subParams.put("history", item.getItemValueType());
 			response = this.apiAccess(authKey, subParams);
 			
 			if(response != null) {
@@ -353,7 +353,7 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	private String getItemValue(String authKey, String itemid) {
+	private String getItemValue(String authKey, Item item) {
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
 		JSONObject response = null;
@@ -362,10 +362,11 @@ public class ZabbixApiAccess {
 		try {
 			this.jsonObject.put("method", "history.get");
 			subParams.put("output", "extend");
-			subParams.put("itemids", itemid);		
+			subParams.put("itemids", item.getItemId());		
 			subParams.put("limit", 1);
 			subParams.put("sortfield", "clock");
 			subParams.put("sortorder", "DESC");
+			subParams.put("history", item.getItemValueType());
 			response = this.apiAccess(authKey, subParams);
 			if(response != null & !response.getString("result").equals("[]")) {
 				JSONArray resultObject = response.getJSONArray("result");

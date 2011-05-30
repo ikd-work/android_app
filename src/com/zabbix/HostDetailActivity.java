@@ -72,7 +72,7 @@ public class HostDetailActivity extends Activity{
 					ListView list = (ListView) parent;
 					Item item = (Item) list.getItemAtPosition(position);
 					Intent intent = new Intent(HostDetailActivity.this,MonitorActivity.class);
-					intent.putExtra("itemid", item.getItemId());
+					intent.putExtra("item", item);
 					intent.putExtra("itemdescription", item.getItemDescription());
 					intent.putExtra("hostName", hostName);
 					startActivity(intent);
