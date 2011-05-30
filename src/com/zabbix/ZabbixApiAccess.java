@@ -319,8 +319,7 @@ public class ZabbixApiAccess {
 		try {
 			this.jsonObject.put("method", "history.get");
 			subParams.put("output","extend");
-			subsubParams.put("itemid",itemID);
-			subParams.put("filter", subsubParams);
+			subParams.put("itemids", itemID);
 			subParams.put("time_from", timerange.getTimeFrom());
 			subParams.put("time_till", timerange.getTimeTill());
 			
@@ -363,8 +362,7 @@ public class ZabbixApiAccess {
 		try {
 			this.jsonObject.put("method", "history.get");
 			subParams.put("output", "extend");
-			subsubParams.put("itemid", itemid);
-			subParams.put("filter", subsubParams);
+			subParams.put("itemids", itemid);		
 			subParams.put("limit", 1);
 			subParams.put("sortfield", "clock");
 			subParams.put("sortorder", "DESC");
