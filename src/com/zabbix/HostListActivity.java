@@ -57,6 +57,7 @@ public class HostListActivity extends Activity {
 		}
     }
     
+    
     public boolean onCreateOptionsMenu(Menu menu){
     	boolean ret = super.onCreateOptionsMenu(menu);
     	
