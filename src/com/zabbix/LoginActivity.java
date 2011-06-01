@@ -97,8 +97,6 @@ public class LoginActivity extends Activity {
     	super.onStart();
         authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
         if (authData.getString("AuthToken", "No Data") != "No Data"){
-       // 	Intent intent = new Intent(this,HostListActivity.class);
-       // 	startActivity(intent);
         	finish();
         }
     }   

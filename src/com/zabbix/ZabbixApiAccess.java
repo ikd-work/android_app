@@ -293,7 +293,8 @@ public class ZabbixApiAccess {
 					item.setItemDescription(resultObject.getJSONObject(i).getString("description"));
 					item.setItemKey(resultObject.getJSONObject(i).getString("key_"));
 					item.setItemValueType(resultObject.getJSONObject(i).getString("value_type"));
-					item.setItemValue(this.getItemValue(authKey,item));
+					item.setItemValue(resultObject.getJSONObject(i).getString("lastvalue"));
+					//item.setItemValue(this.getItemValue(authKey,item));
 					//hostList.add(resultObject.getJSONObject(i).getString("host"));
 					itemList.add(item);
 				}			
@@ -351,39 +352,6 @@ public class ZabbixApiAccess {
 
 		
 		
-	}
-	
-	private String getItemValue(String authKey, Item item) {
-		JSONObject subParams = new JSONObject();
-		JSONObject subsubParams = new JSONObject();
-		JSONObject response = null;
-		String value = "";
-		
-		try {
-			this.jsonObject.put("method", "history.get");
-			subParams.put("output", "extend");
-			subParams.put("itemids", item.getItemId());		
-			subParams.put("limit", 1);
-			subParams.put("sortfield", "clock");
-			subParams.put("sortorder", "DESC");
-			subParams.put("history", item.getItemValueType());
-			response = this.apiAccess(authKey, subParams);
-			if(response != null & !response.getString("result").equals("[]")) {
-				JSONArray resultObject = response.getJSONArray("result");
-	
-				int count = resultObject.length();
-				for (int i=0; i<count; i++)
-				{
-					value = resultObject.getJSONObject(i).getString("value");
-				}
-			
-			}
-			return value;
-		} catch (JSONException e) {
-			// TODO Ž©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
-			e.printStackTrace();
-			return value;
-		}
 	}
 
 
