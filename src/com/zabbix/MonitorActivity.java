@@ -99,14 +99,7 @@ public class MonitorActivity extends Activity {
         dataset.addSeries(series);
         
         final LineChartView lineview = (LineChartView) findViewById(R.id.lineview);
-        lineview.setChart(getLineChartView(dataset, itemdescription));
-        //lineview.setDrawingCacheEnabled(true);
-        //final Bitmap bmp = lineview.getDrawingCache();
-        //if ( bmp == null) {
-        //	Log.e("bmp","null");
-        //}
-        File tmpfile = new File("./chart_view.png");
-        
+        lineview.setChart(getLineChartView(dataset, itemdescription));    
         lineview.setOnClickListener(new View.OnClickListener(){
         	
         	public void onClick(View v) {
