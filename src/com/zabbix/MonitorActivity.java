@@ -1,5 +1,8 @@
 package com.zabbix;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -10,6 +13,7 @@ import java.util.TimeZone;
 
 import org.afree.chart.AFreeChart;
 import org.afree.chart.ChartFactory;
+import org.afree.chart.ChartUtilities;
 import org.afree.chart.axis.DateAxis;
 import org.afree.chart.axis.NumberAxis;
 import org.afree.chart.plot.PiePlot;
@@ -30,12 +34,16 @@ import org.afree.graphics.SolidColor;
 import org.afree.graphics.geom.Font;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 public class MonitorActivity extends Activity {
@@ -90,8 +98,37 @@ public class MonitorActivity extends Activity {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(series);
         
-        LineChartView lineview = (LineChartView) findViewById(R.id.lineview);
-        lineview.setChart(getLineChartView(dataset, itemdescription));      
+        final LineChartView lineview = (LineChartView) findViewById(R.id.lineview);
+        lineview.setChart(getLineChartView(dataset, itemdescription));
+        //lineview.setDrawingCacheEnabled(true);
+        //final Bitmap bmp = lineview.getDrawingCache();
+        //if ( bmp == null) {
+        //	Log.e("bmp","null");
+        //}
+        File tmpfile = new File("./chart_view.png");
+        
+        lineview.setOnClickListener(new View.OnClickListener(){
+        	
+        	public void onClick(View v) {
+        		Intent intent = new Intent();
+        		View view = lineview.getRootView();
+        		view.setDrawingCacheEnabled(true);
+        		Bitmap bmp = view.getDrawingCache();
+        		if ( bmp != null ) {
+        			try {
+						FileOutputStream output = openFileOutput("test.png",Context.MODE_WORLD_READABLE);
+						bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+					} catch (FileNotFoundException e) {
+						// TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
+						e.printStackTrace();
+					}
+        		}
+        		intent.setAction(Intent.ACTION_SEND);
+        		intent.setType("image/jpeg");
+        		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("test.png"));
+        		startActivity(intent);
+        	}
+        });
 	}
 	
 	public AFreeChart getLineChartView(TimeSeriesCollection dataset, String itemdescription) {
