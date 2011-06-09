@@ -1,8 +1,11 @@
 package com.zabbix;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -34,14 +37,17 @@ import org.afree.graphics.SolidColor;
 import org.afree.graphics.geom.Font;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -103,22 +109,45 @@ public class MonitorActivity extends Activity {
         lineview.setOnClickListener(new View.OnClickListener(){
         	
         	public void onClick(View v) {
-        		Intent intent = new Intent();
         		View view = lineview.getRootView();
         		view.setDrawingCacheEnabled(true);
         		Bitmap bmp = view.getDrawingCache();
+        		String status = Environment.getExternalStorageState();
+        		File dataDir = null;
+        		if ( status.equals(Environment.MEDIA_MOUNTED)) {
+        			dataDir = new File(Environment.getExternalStorageDirectory(),"com.zabbix");
+        			dataDir.mkdirs();
+        		}
+        		else {
+        			new AlertDialog.Builder(MonitorActivity.this).setMessage("SDカードがありません").setPositiveButton("OK",null).show();
+        		}
+        		String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dataDir.getName() + File.separator + "test.jpg";
         		if ( bmp != null ) {
-        			try {
-						FileOutputStream output = openFileOutput("test.png",Context.MODE_WORLD_READABLE);
-						bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
-					} catch (FileNotFoundException e) {
+        			ByteArrayOutputStream os = new ByteArrayOutputStream();
+					
+					//FileOutputStream output = openFileOutput(filePath,Context.MODE_WORLD_READABLE);
+					bmp.compress(Bitmap.CompressFormat.JPEG, 100, os);
+					try {
+						os.flush();
+						byte[] w = os.toByteArray();
+						os.close();
+						FileOutputStream out = new FileOutputStream(filePath);
+						out.write(w, 0, w.length);
+						out.flush();
+						
+					} catch (IOException e) {
 						// TODO 自動生成された catch ブロック
 						e.printStackTrace();
 					}
         		}
+        		Uri uri = Uri.fromFile(new File(filePath));
+        		Intent intent = new Intent();
+        		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         		intent.setAction(Intent.ACTION_SEND);
-        		intent.setType("image/jpeg");
-        		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("test.png"));
+        		intent.setType("image/*");
+        		Log.e("URL",Uri.parse("file:///sdcard/test.jpg").toString());
+        		intent.putExtra(Intent.EXTRA_STREAM, uri);
+        		
         		startActivity(intent);
         	}
         });
