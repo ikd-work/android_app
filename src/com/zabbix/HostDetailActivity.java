@@ -39,7 +39,7 @@ public class HostDetailActivity extends Activity{
         ZabbixApiAccess zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
 		ArrayList<String> itemIdList = zabbix.getItemIdList(authToken, hostID);
-		ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 10);
+		ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
         Log.e("itemIdList",itemIdList.toString());
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
         TextView textViewHostName = (TextView)this.findViewById(R.id.host_detail_name);
@@ -65,7 +65,7 @@ public class HostDetailActivity extends Activity{
 		if( itemList != null) {
 			ItemListAdapter adapter = new ItemListAdapter(this, itemList);		    
 			ListView list= (ListView)findViewById(R.id.itemlistview);
-		    
+		    list.addFooterView(getFooter());
 			list.setAdapter(adapter);
 			
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -81,6 +81,14 @@ public class HostDetailActivity extends Activity{
 			});
 		}
         
+    }
+    
+    private View getFooter() {
+    	View mFooter = null;
+		if (mFooter == null) {
+    		mFooter = getLayoutInflater().inflate(R.layout.host_detail_footer, null);
+    	}
+		return mFooter;
     }
 
 }
