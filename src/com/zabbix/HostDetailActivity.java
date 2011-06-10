@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,7 +27,7 @@ public class HostDetailActivity extends Activity{
         setTitle(R.string.title_host_detail);
         
         Intent intent = getIntent();
-        String hostID = intent.getStringExtra("hostid");
+        final String hostID = intent.getStringExtra("hostid");
         final String hostName = intent.getStringExtra("hostname");
         String hostStatus = intent.getStringExtra("hoststatus");
         String hostDns = intent.getStringExtra("hostdns");
@@ -33,13 +35,13 @@ public class HostDetailActivity extends Activity{
 
         
         authData = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        String authToken = authData.getString("AuthToken", "No Data");
+        final String authToken = authData.getString("AuthToken", "No Data");
         String uri = authData.getString("URI", "No Data");
         
-        ZabbixApiAccess zabbix = new ZabbixApiAccess();
+        final ZabbixApiAccess zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
-		ArrayList<String> itemIdList = zabbix.getItemIdList(authToken, hostID);
-		ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+		final ArrayList<String> itemIdList = zabbix.getItemIdList(authToken, hostID);
+		final ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
         Log.e("itemIdList",itemIdList.toString());
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
         TextView textViewHostName = (TextView)this.findViewById(R.id.host_detail_name);
@@ -64,10 +66,21 @@ public class HostDetailActivity extends Activity{
       
 		if( itemList != null) {
 			ItemListAdapter adapter = new ItemListAdapter(this, itemList);		    
-			ListView list= (ListView)findViewById(R.id.itemlistview);
+			final ListView list= (ListView)findViewById(R.id.itemlistview);
 		    list.addFooterView(getFooter());
 			list.setAdapter(adapter);
-			
+			list.setOnScrollListener(new OnScrollListener() {
+				public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+					Log.e("totalItemCount",Integer.toString(totalItemCount));
+					if( totalItemCount < itemIdList.size()) {
+						ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+						list.invalidateViews();
+					}
+				}
+				public void onScrollStateChanged(AbsListView view, int arg1){
+					
+				}
+			});
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					ListView list = (ListView) parent;
@@ -90,5 +103,7 @@ public class HostDetailActivity extends Activity{
     	}
 		return mFooter;
     }
+    
+    
 
 }

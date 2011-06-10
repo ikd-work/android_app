@@ -30,6 +30,9 @@ public class ZabbixApiAccess {
 	private String host;
 	private HttpPost httpPost;
 	private JSONObject jsonObject = new JSONObject();
+	private ArrayList<Item> itemList = new ArrayList<Item>();
+	private ArrayList<String> itemIdList = new ArrayList<String>();
+	private int position = 0;
 	
 	public void setHost(String host)
 	{
@@ -264,9 +267,10 @@ public class ZabbixApiAccess {
 		}
 		
 	}
+	
 	public ArrayList<Item> getItemList(String authKey, String hostid, ArrayList<String> itemIdList, int num) {
 		
-		ArrayList<Item> itemList = new ArrayList<Item>();
+		
 		
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
@@ -275,10 +279,22 @@ public class ZabbixApiAccess {
 		try {
 			this.jsonObject.put("method", "item.get");
 			subParams.put("output","extend");
-			subsubParams.put("hostids", itemIdList);
+			JSONArray idarray = new JSONArray();
+			//Log.e("itemid",itemIdList.get(0));
+			Log.e("position",Integer.toString(position));
+			for (int i=0; i<num; i++) {
+				if ( position < itemIdList.size() ){
+					idarray.put(itemIdList.get(this.position));
+					this.position = this.position + 1;
+				}
+				else {
+					break;
+				}
+			}
+			subsubParams.put("itemid", idarray);
 			//subsubParams.put("hostid",hostid);
 			subParams.put("filter", subsubParams);
-			subParams.put("limit", num);
+			//subParams.put("limit", num);
 			
 			response = this.apiAccess(authKey, subParams);
 			
@@ -312,8 +328,6 @@ public class ZabbixApiAccess {
 	
 	public ArrayList<String> getItemIdList(String authKey, String hostid) {
 		
-		ArrayList<String> itemIdList = new ArrayList<String>();
-		
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
 		JSONObject response = null;
@@ -334,10 +348,10 @@ public class ZabbixApiAccess {
 				for (int i=0; i<count; i++)
 				{
 					String itemid = null;
-					itemIdList.add(resultObject.getJSONObject(i).getString("itemid"));
+					this.itemIdList.add(resultObject.getJSONObject(i).getString("itemid"));
 				}			
 			}
-			return itemIdList;
+			return this.itemIdList;
 		} catch (JSONException e) {
 			// TODO Ž©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
 			e.printStackTrace();
