@@ -264,7 +264,7 @@ public class ZabbixApiAccess {
 		}
 		
 	}
-	public ArrayList<Item> getItemList(String authKey, String hostid, int num) {
+	public ArrayList<Item> getItemList(String authKey, String hostid, ArrayList<String> itemIdList, int num) {
 		
 		ArrayList<Item> itemList = new ArrayList<Item>();
 		
@@ -275,7 +275,8 @@ public class ZabbixApiAccess {
 		try {
 			this.jsonObject.put("method", "item.get");
 			subParams.put("output","extend");
-			subsubParams.put("hostid",hostid);
+			subsubParams.put("hostids", itemIdList);
+			//subsubParams.put("hostid",hostid);
 			subParams.put("filter", subsubParams);
 			subParams.put("limit", num);
 			
@@ -304,6 +305,43 @@ public class ZabbixApiAccess {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 			return itemList;
+		}
+		
+		
+	}
+	
+	public ArrayList<String> getItemIdList(String authKey, String hostid) {
+		
+		ArrayList<String> itemIdList = new ArrayList<String>();
+		
+		JSONObject subParams = new JSONObject();
+		JSONObject subsubParams = new JSONObject();
+		JSONObject response = null;
+		
+		try {
+			this.jsonObject.put("method", "item.get");
+			subParams.put("output","shorten");
+			subsubParams.put("hostid",hostid);
+			subParams.put("filter", subsubParams);
+			
+			response = this.apiAccess(authKey, subParams);
+			
+			if(response != null) {
+				JSONArray resultObject = response.getJSONArray("result");
+				
+				int count = resultObject.length();
+			
+				for (int i=0; i<count; i++)
+				{
+					String itemid = null;
+					itemIdList.add(resultObject.getJSONObject(i).getString("itemid"));
+				}			
+			}
+			return itemIdList;
+		} catch (JSONException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return itemIdList;
 		}
 		
 		

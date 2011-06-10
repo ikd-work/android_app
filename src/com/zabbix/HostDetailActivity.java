@@ -38,8 +38,9 @@ public class HostDetailActivity extends Activity{
         
         ZabbixApiAccess zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
-		ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, 10);
-              
+		ArrayList<String> itemIdList = zabbix.getItemIdList(authToken, hostID);
+		ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 10);
+        Log.e("itemIdList",itemIdList.toString());
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
         TextView textViewHostName = (TextView)this.findViewById(R.id.host_detail_name);
         TextView textViewHostStatus = (TextView)this.findViewById(R.id.host_detail_status);
