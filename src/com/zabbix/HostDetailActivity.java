@@ -18,6 +18,7 @@ import android.widget.TextView;
 public class HostDetailActivity extends Activity{
 	private static final String PREFERENCE_KEY = "AuthData";
 	SharedPreferences authData;
+	View mFooter;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -72,10 +73,19 @@ public class HostDetailActivity extends Activity{
 			list.setOnScrollListener(new OnScrollListener() {
 				public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
 					Log.e("totalItemCount",Integer.toString(totalItemCount));
-					if( totalItemCount < itemIdList.size()) {
-						ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
-						list.invalidateViews();
+					if(totalItemCount == firstVisibleItem + visibleItemCount) {
+					
+						if( totalItemCount < itemIdList.size()) {
+							ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+							list.invalidateViews();
+						}
+						else {
+							Log.e("removeFooter","removeFooter");
+							list.removeFooterView(getFooter());
+						}
+						
 					}
+					
 				}
 				public void onScrollStateChanged(AbsListView view, int arg1){
 					
@@ -97,7 +107,7 @@ public class HostDetailActivity extends Activity{
     }
     
     private View getFooter() {
-    	View mFooter = null;
+    
 		if (mFooter == null) {
     		mFooter = getLayoutInflater().inflate(R.layout.host_detail_footer, null);
     	}
