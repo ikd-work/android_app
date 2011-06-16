@@ -32,8 +32,8 @@ public class LineChartView extends View {
 		width = disp.getWidth();
 		height = disp.getHeight();
 		//グラフ描画サイズ計算
-		width = width - 10;
-		height = height - 80;
+		width = width - 20;
+		height = height - 130;
 	}
 	
 	@Override
