@@ -52,7 +52,11 @@ public class HostDetailActivity extends Activity{
         zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
 		itemIdList = zabbix.getItemIdList(authToken, hostID);
-		itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+		
+		if ( itemIdList.size() != 0) {
+			itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+		}
+		
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
         TextView textViewHostName = (TextView)this.findViewById(R.id.host_detail_name);
         TextView textViewHostStatus = (TextView)this.findViewById(R.id.host_detail_status);
@@ -73,8 +77,9 @@ public class HostDetailActivity extends Activity{
         
         textViewHostDns.setText(hostDns);
         textViewHostIp.setText(hostIp);
+        
       
-		if( itemList != null) {
+		if( itemList != null && itemIdList.size() != 0) {
 			ItemListAdapter adapter = new ItemListAdapter(this, itemList);		    
 			list= (ListView)findViewById(R.id.itemlistview);
 		    list.addFooterView(getFooter());
