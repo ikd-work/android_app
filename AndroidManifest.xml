@@ -43,6 +43,11 @@
     			<data android:mimeType="image/*" />
     		</intent-filter>
         </activity>
+        <activity android:name="MonitorStringActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+            </intent-filter>
+        </activity>
        
 
     </application>

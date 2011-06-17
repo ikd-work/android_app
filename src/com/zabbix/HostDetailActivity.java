@@ -95,7 +95,12 @@ public class HostDetailActivity extends Activity{
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					ListView list = (ListView) parent;
 					Item item = (Item) list.getItemAtPosition(position);
-					Intent intent = new Intent(HostDetailActivity.this,MonitorActivity.class);
+					Intent intent;
+					if(item.getItemValueType().equals("3") | item.getItemValueType().equals("0") ) {
+						intent = new Intent(HostDetailActivity.this,MonitorActivity.class);
+					}else {
+						intent = new Intent(HostDetailActivity.this,MonitorStringActivity.class);
+					}
 					intent.putExtra("item", item);
 					intent.putExtra("itemdescription", item.getItemDescription());
 					intent.putExtra("hostName", hostName);

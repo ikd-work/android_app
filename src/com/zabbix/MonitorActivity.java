@@ -65,6 +65,7 @@ public class MonitorActivity extends Activity {
 
         Intent intent = getIntent();
         Item item = (Item)intent.getSerializableExtra("item");
+        
         //String itemID = intent.getStringExtra("itemid");
         String itemdescription = intent.getStringExtra("itemdescription");
         String hostName = intent.getStringExtra("hostName");
