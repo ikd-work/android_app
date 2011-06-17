@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,15 @@ public class HostDetailActivity extends Activity{
 	private static final String PREFERENCE_KEY = "AuthData";
 	SharedPreferences authData;
 	View mFooter;
+	String authToken;
+	ListView list;
+	String hostID;
+	String hostName;
+	ArrayList<String> itemIdList;
+	ArrayList<Item> itemList;
+	ZabbixApiAccess zabbix;
+	AsyncTask<Void, Void, String> mTask = null;
+	
 	
 	/** Called when the activity is first created. */
     @Override
@@ -28,22 +38,21 @@ public class HostDetailActivity extends Activity{
         setTitle(R.string.title_host_detail);
         
         Intent intent = getIntent();
-        final String hostID = intent.getStringExtra("hostid");
-        final String hostName = intent.getStringExtra("hostname");
+        hostID = intent.getStringExtra("hostid");
+        hostName = intent.getStringExtra("hostname");
         String hostStatus = intent.getStringExtra("hoststatus");
         String hostDns = intent.getStringExtra("hostdns");
         String hostIp = intent.getStringExtra("hostip");
 
         
         authData = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        final String authToken = authData.getString("AuthToken", "No Data");
+        authToken = authData.getString("AuthToken", "No Data");
         String uri = authData.getString("URI", "No Data");
         
-        final ZabbixApiAccess zabbix = new ZabbixApiAccess();
+        zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
-		final ArrayList<String> itemIdList = zabbix.getItemIdList(authToken, hostID);
-		final ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
-        Log.e("itemIdList",itemIdList.toString());
+		itemIdList = zabbix.getItemIdList(authToken, hostID);
+		itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
         TextView textViewHostName = (TextView)this.findViewById(R.id.host_detail_name);
         TextView textViewHostStatus = (TextView)this.findViewById(R.id.host_detail_status);
@@ -67,20 +76,19 @@ public class HostDetailActivity extends Activity{
       
 		if( itemList != null) {
 			ItemListAdapter adapter = new ItemListAdapter(this, itemList);		    
-			final ListView list= (ListView)findViewById(R.id.itemlistview);
+			list= (ListView)findViewById(R.id.itemlistview);
 		    list.addFooterView(getFooter());
 			list.setAdapter(adapter);
 			list.setOnScrollListener(new OnScrollListener() {
 				public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
-					Log.e("totalItemCount",Integer.toString(totalItemCount));
 					if(totalItemCount == firstVisibleItem + visibleItemCount) {
 					
 						if( totalItemCount < itemIdList.size()) {
-							ArrayList<Item> itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
-							list.invalidateViews();
+							if (mTask == null || mTask.getStatus() != AsyncTask.Status.RUNNING) {
+								mTask = new AsyncItemGetTask().execute();
+							}
 						}
 						else {
-							Log.e("removeFooter","removeFooter");
 							list.removeFooterView(getFooter());
 						}
 						
@@ -119,6 +127,23 @@ public class HostDetailActivity extends Activity{
 		return mFooter;
     }
     
+    class AsyncItemGetTask extends AsyncTask<Void,Void,String>{
+    	@Override
+    	protected void onPreExecute() {
+    		
+    	}
+    	@Override
+		protected String doInBackground(Void... arg0) {
+    		itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+			return null;
+		}
+    	@Override
+    	protected void onPostExecute(String result) {
+    		list.invalidateViews();
+    		
+    	}
+		
+    }
     
 
 }

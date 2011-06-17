@@ -9,7 +9,7 @@
 	<TableRow>
 		<TextView 
 			android:id="@+id/history_time"
-			android:textSize="20sp"
+			android:textSize="10sp"
 			android:layout_gravity="left"
 			android:layout_width="wrap_content"
 			android:layout_height="fill_parent"

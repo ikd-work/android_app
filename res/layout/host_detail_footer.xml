@@ -1,11 +1,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:gravity="center">
+     <TextView
+     	android:layout_height="wrap_content"
+     	android:layout_width="wrap_content"
+     	android:text="読込中"
+     	android:layout_gravity="center">
+     </TextView>
+     <ProgressBar
+     	android:layout_height="wrap_content"
+     	android:id="@+id/progress_bar"
+     	android:layout_width="wrap_content" 
+     	android:layout_gravity="center"
+     	style="?android:attr/progressBarStyleSmall">
+     </ProgressBar>
 
-    <ProgressBar android:id="@+id/progress_bar"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        style="?android:attr/progressBarStyle" />
 </LinearLayout>
