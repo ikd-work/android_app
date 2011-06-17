@@ -87,8 +87,9 @@
 	<TextView
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:background="#778899"
-		android:text="Latest Data"
+		android:background="#006400"
+		android:text="Last Data"
+		android:textColor="#f0f8ff"
 	/>
 	<ListView
 	 	android:id="@+id/itemlistview"

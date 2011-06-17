@@ -1,6 +1,7 @@
 package com.zabbix;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -33,10 +34,13 @@ public class HistoryDataListAdapter extends ArrayAdapter<HistoryData>{
 		if( history != null){
 			String time = history.getUnixtime();
 			String value = history.getValue();
+			
+			Date date = new Date();
+			date.setTime(Long.valueOf(time)*1000);
 			timeView = (TextView)view.findViewById(R.id.history_time);
 			valueView = (TextView)view.findViewById(R.id.history_value);
 			
-			timeView.setText(time);
+			timeView.setText(date.toLocaleString());
 			valueView.setText(value);
 			
 		}

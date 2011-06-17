@@ -61,7 +61,7 @@ public class MonitorActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monitor);
-        setTitle(R.string.title_host_detail);
+        setTitle(R.string.title_monitor_result);
 
         Intent intent = getIntent();
         Item item = (Item)intent.getSerializableExtra("item");
