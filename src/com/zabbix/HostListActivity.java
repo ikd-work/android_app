@@ -7,6 +7,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Process;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,13 @@ import android.widget.TextView;
 
 public class HostListActivity extends Activity {
 	
+	ZabbixApiAccess zabbix;
+	ArrayList<Host> hostList;
+	String authToken;
+	String uri;
+	ListView list;
+	HostListAdapter adapter;
+	
 	private static final String PREFERENCE_KEY = "AuthData";
 	SharedPreferences authData;
     /** Called when the activity is first created. */
@@ -28,16 +36,16 @@ public class HostListActivity extends Activity {
         setTitle(R.string.title_host_list);
         
         authData = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        String authToken = authData.getString("AuthToken", "No Data");
-        String uri = authData.getString("URI", "No Data");
+        authToken = authData.getString("AuthToken", "No Data");
+        uri = authData.getString("URI", "No Data");
     
-		ZabbixApiAccess zabbix = new ZabbixApiAccess();
+		zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
-		ArrayList<Host> hostList = zabbix.getHostList(authToken, "all");
+		hostList = zabbix.getHostList(authToken, "all");
 		
 		if( hostList != null) {
-			HostListAdapter adapter = new HostListAdapter(this, hostList);		    
-			ListView list= (ListView)findViewById(R.id.hostlistview);
+			adapter = new HostListAdapter(this, hostList);		    
+			list= (ListView)findViewById(R.id.hostlistview);
 		    
 			list.setAdapter(adapter);
 		
@@ -62,6 +70,8 @@ public class HostListActivity extends Activity {
     	boolean ret = super.onCreateOptionsMenu(menu);
     	
     	menu.add(0, Menu.FIRST, Menu.NONE,R.string.logout);
+    	menu.add(0, Menu.FIRST+1, Menu.NONE,R.string.refresh);
+    	menu.add(0, Menu.FIRST+2, Menu.NONE,R.string.exit);
     	
     	return ret;
     }
@@ -73,6 +83,12 @@ public class HostListActivity extends Activity {
     		
     		Intent intent = new Intent(HostListActivity.this,LoginActivity.class);
     		startActivity(intent);
+    	}else if( item.getItemId() == 2) {
+    		hostList = zabbix.getHostList(authToken, "all");
+    		adapter = new HostListAdapter(this, hostList);
+    		list.setAdapter(adapter);
+    	}else if( item.getItemId() == 3) {
+    		finish();
     	}
     	
     	return super.onOptionsItemSelected(item);

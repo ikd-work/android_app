@@ -8,4 +8,7 @@
     <string name="title_monitor_result">Recent 1 hour</string>
     <string name="empty">No Host...</string>
     <string name="logout">Logout</string>
+    <string name="refresh">Refresh</string>
+    <string name="exit">Exit</string>
+    <string name="hostlist">Back to HostList</string>
 </resources>

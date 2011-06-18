@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -28,6 +30,7 @@ public class HostDetailActivity extends Activity{
 	ArrayList<Item> itemList;
 	ZabbixApiAccess zabbix;
 	AsyncTask<Void, Void, String> mTask = null;
+	Intent intent;
 	
 	
 	/** Called when the activity is first created. */
@@ -37,7 +40,7 @@ public class HostDetailActivity extends Activity{
         setContentView(R.layout.host_detail);
         setTitle(R.string.title_host_detail);
         
-        Intent intent = getIntent();
+        intent = getIntent();
         hostID = intent.getStringExtra("hostid");
         hostName = intent.getStringExtra("hostname");
         String hostStatus = intent.getStringExtra("hoststatus");
@@ -149,6 +152,33 @@ public class HostDetailActivity extends Activity{
     	}
 		
     }
+    
+    public boolean onCreateOptionsMenu(Menu menu){
+    	boolean ret = super.onCreateOptionsMenu(menu);
+    	
+    	menu.add(0, Menu.FIRST, Menu.NONE,R.string.logout);
+    	menu.add(0, Menu.FIRST+1, Menu.NONE,R.string.refresh);
+    	menu.add(0, Menu.FIRST+2, Menu.NONE,R.string.hostlist);
+    	
+    	return ret;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item){
+    	if( item.getItemId() == 1){
+    		authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
+    		authData.edit().clear().commit();
+    		
+    		Intent intent = new Intent(HostDetailActivity.this,LoginActivity.class);
+    		startActivity(intent);
+    	}else if( item.getItemId() == 2) {
+    		startActivity(intent);
+    	}else if( item.getItemId() == 3) {
+    		finish();
+    	}
+    	
+    	return super.onOptionsItemSelected(item);
+    }
+    
     
 
 }
