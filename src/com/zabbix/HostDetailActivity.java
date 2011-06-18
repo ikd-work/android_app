@@ -31,6 +31,7 @@ public class HostDetailActivity extends Activity{
 	ZabbixApiAccess zabbix;
 	AsyncTask<Void, Void, String> mTask = null;
 	Intent intent;
+	ItemListAdapter adapter;
 	
 	
 	/** Called when the activity is first created. */
@@ -83,7 +84,7 @@ public class HostDetailActivity extends Activity{
         
       
 		if( itemList != null && itemIdList.size() != 0) {
-			ItemListAdapter adapter = new ItemListAdapter(this, itemList);		    
+			adapter = new ItemListAdapter(this, itemList);		    
 			list= (ListView)findViewById(R.id.itemlistview);
 		    list.addFooterView(getFooter());
 			list.setAdapter(adapter);
@@ -171,7 +172,16 @@ public class HostDetailActivity extends Activity{
     		Intent intent = new Intent(HostDetailActivity.this,LoginActivity.class);
     		startActivity(intent);
     	}else if( item.getItemId() == 2) {
-    		startActivity(intent);
+    		//startActivity(intent);
+    		
+    		zabbix.clearItemListCount();
+    		itemIdList = zabbix.getItemIdList(authToken, hostID);
+    		
+    		if ( itemIdList.size() != 0) {
+    			itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+    		}
+    		adapter = new ItemListAdapter(this, itemList);
+    		list.setAdapter(adapter);
     	}else if( item.getItemId() == 3) {
     		finish();
     	}

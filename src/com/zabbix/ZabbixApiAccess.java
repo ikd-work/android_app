@@ -361,6 +361,11 @@ public class ZabbixApiAccess {
 		
 	}
 	
+	public void clearItemListCount(){
+		position = 0;
+		itemList.clear();
+	}
+	
 	public ArrayList<HistoryData> getHistoryData(String authKey, Item item, TimeRange timerange ) {
 
 		ArrayList<HistoryData> historyDataList = new ArrayList<HistoryData>();
