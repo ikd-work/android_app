@@ -117,17 +117,18 @@ public class MonitorActivity extends Activity {
         		File dataDir = null;
         		if ( status.equals(Environment.MEDIA_MOUNTED)) {
         			dataDir = new File(Environment.getExternalStorageDirectory(),"com.zabbix");
-        			dataDir.mkdirs();
+       				dataDir.mkdir();
         		}
         		else {
         			new AlertDialog.Builder(MonitorActivity.this).setMessage("SDÉJÅ[ÉhÇ™Ç†ÇËÇ‹ÇπÇÒ").setPositiveButton("OK",null).show();
         		}
-        		String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dataDir.getName() + File.separator + "test.jpg";
+        		String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dataDir.getName() + File.separator + "graph.png";
         		if ( bmp != null ) {
         			ByteArrayOutputStream os = new ByteArrayOutputStream();
 					
 					//FileOutputStream output = openFileOutput(filePath,Context.MODE_WORLD_READABLE);
-					bmp.compress(Bitmap.CompressFormat.JPEG, 100, os);
+					bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+					Log.e("outputStream",Integer.toString(os.size()));
 					try {
 						os.flush();
 						byte[] w = os.toByteArray();
@@ -146,7 +147,6 @@ public class MonitorActivity extends Activity {
         		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         		intent.setAction(Intent.ACTION_SEND);
         		intent.setType("image/*");
-        		Log.e("URL",Uri.parse("file:///sdcard/test.jpg").toString());
         		intent.putExtra(Intent.EXTRA_STREAM, uri);
         		
         		startActivity(intent);
