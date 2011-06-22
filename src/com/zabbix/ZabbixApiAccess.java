@@ -406,20 +406,23 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	public ArrayList<Event> getEventList(String authKey, Host host, int limit) {
+	public ArrayList<Trigger> getTriggerList(String authKey, String hostId, int limit) {
 
-		ArrayList<Event> eventList = new ArrayList<Event>();
+		ArrayList<Trigger> triggerList = new ArrayList<Trigger>();
 		
 		JSONObject subParams = new JSONObject();
+		JSONObject subsubParams = new JSONObject();
 		JSONObject response = null;
 		
 		try {
-			this.jsonObject.put("method", "event.get");
+			this.jsonObject.put("method", "trigger.get");
 			subParams.put("output","extend");
-			subParams.put("hostid", host.getHostId());
-			subParams.put("sortfield", "clock");
+			subParams.put("hostid", hostId);
+			subParams.put("sortfield", "lastchange");
 			subParams.put("sortorder", "DESC");
 			subParams.put("limit", limit);
+			subsubParams.put("value", 1);
+			subParams.put("filter", subsubParams);
 			response = this.apiAccess(authKey, subParams);
 			
 			if(response != null) {
@@ -429,20 +432,20 @@ public class ZabbixApiAccess {
 			    
 				for (int i=0; i<count; i++)
 				{
-					Event event= new Event();
-					event.setEventId(resultObject.getJSONObject(i).getString("eventid"));
-					event.setObjectId(resultObject.getJSONObject(i).getString("objectid"));
-					event.setClock(resultObject.getJSONObject(i).getString("clock"));
-					event.setValue(resultObject.getJSONObject(i).getString("value"));
+					Trigger trigger = new Trigger();
+					trigger.setTriggerId(resultObject.getJSONObject(i).getString("triggerid"));
+					trigger.setDescription(resultObject.getJSONObject(i).getString("description"));
+					trigger.setLastchange(resultObject.getJSONObject(i).getString("lastchange"));
+					trigger.setValue(resultObject.getJSONObject(i).getString("value"));
 					
-					eventList.add(event);
+					triggerList.add(trigger);
 				}			
 			}
-			return eventList;
+			return triggerList;
 		} catch (JSONException e) {
 			// TODO Ž©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
 			e.printStackTrace();
-			return eventList;
+			return triggerList;
 		}	
 		
 	}

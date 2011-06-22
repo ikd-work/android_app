@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class HostListAdapter extends ArrayAdapter<Host>{
@@ -17,7 +18,8 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 	private LayoutInflater inflater;
 	private TextView hostIdView;
 	private TextView hostNameView;
-
+	private ImageView triggerView;
+	
 	public HostListAdapter(Context context, ArrayList<Host> objects) {
 		super(context, 0, objects);
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -39,6 +41,7 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 			String hoststatus = host.getHostStatus();
 			hostIdView = (TextView)view.findViewById(R.id.host_id);
 			hostNameView = (TextView)view.findViewById(R.id.host_name);
+			triggerView = (ImageView)view.findViewById(R.id.fire_image);
 			
 			if (hoststatus.equals("1")) {
 				hostIdView.setTextColor(Color.RED);
