@@ -405,6 +405,47 @@ public class ZabbixApiAccess {
 		
 		
 	}
+	
+	public ArrayList<Event> getEventList(String authKey, Host host, int limit) {
+
+		ArrayList<Event> eventList = new ArrayList<Event>();
+		
+		JSONObject subParams = new JSONObject();
+		JSONObject response = null;
+		
+		try {
+			this.jsonObject.put("method", "event.get");
+			subParams.put("output","extend");
+			subParams.put("hostid", host.getHostId());
+			subParams.put("sortfield", "clock");
+			subParams.put("sortorder", "DESC");
+			subParams.put("limit", limit);
+			response = this.apiAccess(authKey, subParams);
+			
+			if(response != null) {
+				JSONArray resultObject = response.getJSONArray("result");
+				
+				int count = resultObject.length();
+			    
+				for (int i=0; i<count; i++)
+				{
+					Event event= new Event();
+					event.setEventId(resultObject.getJSONObject(i).getString("eventid"));
+					event.setObjectId(resultObject.getJSONObject(i).getString("objectid"));
+					event.setClock(resultObject.getJSONObject(i).getString("clock"));
+					event.setValue(resultObject.getJSONObject(i).getString("value"));
+					
+					eventList.add(event);
+				}			
+			}
+			return eventList;
+		} catch (JSONException e) {
+			// TODO Ž©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			e.printStackTrace();
+			return eventList;
+		}	
+		
+	}
 
 
 }
