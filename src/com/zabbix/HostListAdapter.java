@@ -19,6 +19,8 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 	private TextView hostIdView;
 	private TextView hostNameView;
 	private ImageView triggerView;
+	private String hostid;
+	private String hostname;
 	
 	public HostListAdapter(Context context, ArrayList<Host> objects) {
 		super(context, 0, objects);
@@ -36,8 +38,8 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 		Host host = this.getItem(position);
 		
 		if( host != null){
-			String hostid = host.getHostId();
-			String hostname = host.getHostName();
+			hostid = host.getHostId();
+			hostname = host.getHostName();
 			String hoststatus = host.getHostStatus();
 			hostIdView = (TextView)view.findViewById(R.id.host_id);
 			hostNameView = (TextView)view.findViewById(R.id.host_name);
@@ -50,6 +52,16 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 			hostIdView.setText(hostid);
 			hostNameView.setText(hostname);
 			
+			
+			triggerView.setOnClickListener(new View.OnClickListener(){
+				
+				public void onClick(View v) {
+					Intent intent = new Intent(v.getContext(),TriggerActivity.class);
+					intent.putExtra("hostid", hostid);
+					intent.putExtra("hostname", hostname);
+					v.getContext().startActivity(intent);
+				}
+			});
 		}
 		return view;
 	}
