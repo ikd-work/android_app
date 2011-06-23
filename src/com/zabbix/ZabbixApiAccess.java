@@ -415,9 +415,11 @@ public class ZabbixApiAccess {
 		JSONObject response = null;
 		
 		try {
+			JSONArray idarray = new JSONArray();
+			idarray.put(hostId);
 			this.jsonObject.put("method", "trigger.get");
 			subParams.put("output","extend");
-			subParams.put("hostid", hostId);
+			subParams.put("hostids", idarray);
 			subParams.put("sortfield", "lastchange");
 			subParams.put("sortorder", "DESC");
 			subParams.put("limit", limit);
