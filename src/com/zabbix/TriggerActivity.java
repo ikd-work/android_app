@@ -13,14 +13,14 @@ import android.widget.ListView;
 public class TriggerActivity extends Activity {
 	
 	ZabbixApiAccess zabbix;
-	ArrayList<Trigger> eventList;
+	
 	String authToken;
 	String uri;
 	ListView list;
 	TriggerListAdapter adapter;
-	Intent intent;
-	String hostId;
-	String hostName;
+
+	
+	
 	
 	private static final String PREFERENCE_KEY = "AuthData";
 	SharedPreferences authData;
@@ -35,14 +35,14 @@ public class TriggerActivity extends Activity {
         authToken = authData.getString("AuthToken", "No Data");
         uri = authData.getString("URI", "No Data");
     
-        intent = getIntent();
-        hostId = intent.getStringExtra("hostid");
-        hostName = intent.getStringExtra("hostname");
+        Intent intent = getIntent();
+        String hostId = intent.getStringExtra("hostid");
+        String hostName = intent.getStringExtra("hostname");
         
         
 		zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
-		eventList = zabbix.getTriggerList(authToken, hostId, 20);
+		ArrayList<Trigger> eventList = zabbix.getTriggerList(authToken, hostId, 20);
 		
 		if( eventList != null) {
 			adapter = new TriggerListAdapter(this, eventList);		    

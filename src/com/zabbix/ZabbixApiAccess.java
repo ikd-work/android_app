@@ -224,6 +224,7 @@ public class ZabbixApiAccess {
 	public ArrayList<Host> getHostList(String authKey, String filter)
 	{
 		ArrayList<Host> hostList = new ArrayList<Host>();
+		ArrayList<Trigger> trigger = new ArrayList<Trigger>();
 		
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
@@ -255,6 +256,13 @@ public class ZabbixApiAccess {
 					//hostList.add(resultObject.getJSONObject(i).getString("host"));
 					Log.e("hostID",host.getHostId());
 					Log.e("hostName",host.getHostName());
+					trigger = this.getTriggerList(authKey, host.getHostId(), 0);
+					int errornum = 0;
+					if (trigger != null) {
+						errornum = trigger.size();
+					}
+					Log.e("errornum",Integer.toString(errornum));
+					host.setErrorNum(errornum);
 					hostList.add(host);
 				}			
 				return hostList;
@@ -422,7 +430,10 @@ public class ZabbixApiAccess {
 			subParams.put("hostids", idarray);
 			subParams.put("sortfield", "lastchange");
 			subParams.put("sortorder", "DESC");
-			subParams.put("limit", limit);
+			if ( limit != 0 ){
+				subParams.put("limit", limit);
+			}
+			
 			subsubParams.put("value", 1);
 			subParams.put("filter", subsubParams);
 			response = this.apiAccess(authKey, subParams);

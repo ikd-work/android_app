@@ -6,6 +6,7 @@ public class Host {
 	private String hostStatus;
 	private String hostDns;
 	private String hostIp;
+	private int errorNum;
 	
 	public Host(){
 		hostId = "";
@@ -13,6 +14,7 @@ public class Host {
 		hostStatus = "";
 		hostDns = "";
 		hostIp = "";
+		errorNum = 0;
 	}
 	
 	public void setHostId(String hostid){
@@ -35,6 +37,9 @@ public class Host {
 		hostIp = hostip;
 	}
 
+	public void setErrorNum(int errornum){
+		errorNum = errornum;
+	}
 	
 	public String getHostId(){
 		return hostId;
@@ -54,6 +59,10 @@ public class Host {
 
 	public String getHostIp(){
 		return hostIp;
+	}
+	
+	public int getErrorNum(){
+		return errorNum;
 	}
 
 }
