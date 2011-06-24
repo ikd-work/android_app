@@ -7,16 +7,19 @@
   android:layout_height="fill_parent">
   <TableRow>
   	<TextView
-  		android:id="@+id/triggerid"
+  		android:id="@+id/lastchange"
   		android:layout_width="wrap_content"
   		android:layout_height="wrap_content"
   		android:layout_gravity="left"
+  		android:textSize="10sp"
   	/>
   	<TextView
   		android:id="@+id/description"
   		android:layout_width="wrap_content"
   		android:layout_height="wrap_content"
   		android:layout_gravity="right"
+  		android:textSize="8sp"
+  		android:textColor="@color/textred"
   	/>
   		
   </TableRow>

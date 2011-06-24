@@ -435,6 +435,7 @@ public class ZabbixApiAccess {
 			}
 			
 			subsubParams.put("value", 1);
+			subsubParams.put("status", 0);
 			subParams.put("filter", subsubParams);
 			response = this.apiAccess(authKey, subParams);
 			

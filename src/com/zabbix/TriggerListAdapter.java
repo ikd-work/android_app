@@ -1,6 +1,7 @@
 package com.zabbix;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 public class TriggerListAdapter extends ArrayAdapter<Trigger>{
 
 	private LayoutInflater inflater;
-	private TextView triggerIdView;
+	private TextView lastchangeView;
 	private TextView descriptionView;
 
 	public TriggerListAdapter(Context context, ArrayList<Trigger> objects) {
@@ -36,10 +37,13 @@ public class TriggerListAdapter extends ArrayAdapter<Trigger>{
 			String description = trigger.getDescription();
 			String lastchange = trigger.getLastchange();
 			String value = trigger.getValue();
-			triggerIdView = (TextView)view.findViewById(R.id.triggerid);
+			lastchangeView = (TextView)view.findViewById(R.id.lastchange);
 			descriptionView = (TextView)view.findViewById(R.id.description);
 			
-			triggerIdView.setText(triggerid);
+			Date date = new Date();
+			date.setTime(Long.valueOf(lastchange)*1000);
+			
+			lastchangeView.setText(date.toLocaleString());
 			descriptionView.setText(description);
 		}
 		return view;
