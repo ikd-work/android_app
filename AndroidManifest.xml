@@ -49,7 +49,11 @@
                 <action android:name="android.intent.action.MAIN"></action>
             </intent-filter>
         </activity>
-       
+        <activity android:name="TriggerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+            </intent-filter>
+        </activity>
 
     </application>
    

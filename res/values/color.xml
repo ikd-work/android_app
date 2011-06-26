@@ -4,4 +4,6 @@
 <color name="chartarea_background">#333333</color>
 <color name="label">#0088ff</color>
 <color name="label_highlight">#ff4d2d</color>
+<color name="textblue">#00008b</color>
+<color name="textred">#ff0000</color>
 </resources>

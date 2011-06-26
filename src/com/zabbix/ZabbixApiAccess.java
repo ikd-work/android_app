@@ -224,6 +224,7 @@ public class ZabbixApiAccess {
 	public ArrayList<Host> getHostList(String authKey, String filter)
 	{
 		ArrayList<Host> hostList = new ArrayList<Host>();
+		ArrayList<Trigger> trigger = new ArrayList<Trigger>();
 		
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
@@ -255,6 +256,13 @@ public class ZabbixApiAccess {
 					//hostList.add(resultObject.getJSONObject(i).getString("host"));
 					Log.e("hostID",host.getHostId());
 					Log.e("hostName",host.getHostName());
+					trigger = this.getTriggerList(authKey, host.getHostId(), 0);
+					int errornum = 0;
+					if (trigger != null) {
+						errornum = trigger.size();
+					}
+					Log.e("errornum",Integer.toString(errornum));
+					host.setErrorNum(errornum);
 					hostList.add(host);
 				}			
 				return hostList;
@@ -408,6 +416,56 @@ public class ZabbixApiAccess {
 		}
 
 		
+		
+	}
+	
+	public ArrayList<Trigger> getTriggerList(String authKey, String hostId, int limit) {
+
+		ArrayList<Trigger> triggerList = new ArrayList<Trigger>();
+		
+		JSONObject subParams = new JSONObject();
+		JSONObject subsubParams = new JSONObject();
+		JSONObject response = null;
+		
+		try {
+			JSONArray idarray = new JSONArray();
+			idarray.put(hostId);
+			this.jsonObject.put("method", "trigger.get");
+			subParams.put("output","extend");
+			subParams.put("hostids", idarray);
+			subParams.put("sortfield", "lastchange");
+			subParams.put("sortorder", "DESC");
+			if ( limit != 0 ){
+				subParams.put("limit", limit);
+			}
+			
+			subsubParams.put("value", 1);
+			subsubParams.put("status", 0);
+			subParams.put("filter", subsubParams);
+			response = this.apiAccess(authKey, subParams);
+			
+			if(response != null) {
+				JSONArray resultObject = response.getJSONArray("result");
+				
+				int count = resultObject.length();
+			    
+				for (int i=0; i<count; i++)
+				{
+					Trigger trigger = new Trigger();
+					trigger.setTriggerId(resultObject.getJSONObject(i).getString("triggerid"));
+					trigger.setDescription(resultObject.getJSONObject(i).getString("description"));
+					trigger.setLastchange(resultObject.getJSONObject(i).getString("lastchange"));
+					trigger.setValue(resultObject.getJSONObject(i).getString("value"));
+					
+					triggerList.add(trigger);
+				}			
+			}
+			return triggerList;
+		} catch (JSONException e) {
+			// TODO Ž©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			e.printStackTrace();
+			return triggerList;
+		}	
 		
 	}
 
