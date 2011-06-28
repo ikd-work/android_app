@@ -16,6 +16,8 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -23,6 +25,7 @@ public class LineChartView extends View {
 	private AFreeChart chart;
 	int width;
 	int height;
+	
 	
 	public LineChartView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -34,6 +37,8 @@ public class LineChartView extends View {
 		//グラフ描画サイズ計算
 		width = width - 20;
 		height = height - 170;
+		
+		
 	}
 	
 	@Override

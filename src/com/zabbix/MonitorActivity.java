@@ -49,30 +49,93 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MonitorActivity extends Activity {
 	private static final String PREFERENCE_KEY = "AuthData";
 	SharedPreferences authData;
 	TimeRange timerange = new TimeRange();
+	ZabbixApiAccess zabbix;
+	String authToken;
+	String uri;
+	Item item;
+	GestureDetector gestureDetector;
+	LineChartView lineview;
+	String itemdescription;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monitor);
         setTitle(R.string.title_monitor_result);
+        
+        
+        gestureDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+			
+			@Override
+			public boolean onSingleTapUp(MotionEvent arg0) {
+				// TODO 自動生成されたメソッド・スタブ
+				return false;
+			}
+			
+			@Override
+			public void onShowPress(MotionEvent arg0) {
+				// TODO 自動生成されたメソッド・スタブ
+				
+			}
+			
+			@Override
+			public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
+					float arg3) {
+				// TODO 自動生成されたメソッド・スタブ
+				return false;
+			}
+			
+			@Override
+			public void onLongPress(MotionEvent arg0) {
+				// TODO 自動生成されたメソッド・スタブ
+				
+			}
+			
+			@Override
+			public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2,
+					float arg3) {
+				if (arg0.getX() < arg1.getX()) {
+					Toast.makeText(MonitorActivity.this, "左", Toast.LENGTH_LONG).show();
+					lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
+					lineview.invalidate();
+				}else if (arg0.getX() > arg1.getX()) {
+					//Toast.makeText(MonitorActivity.this, "右", Toast.LENGTH_LONG).show();
+				}
+				// TODO 自動生成されたメソッド・スタブ
+				return false;
+			}
+			
+			@Override
+			public boolean onDown(MotionEvent arg0) {
+				// TODO 自動生成されたメソッド・スタブ
+				return false;
+			}
+		});
+        
+        
+        
+        
 
         Intent intent = getIntent();
-        Item item = (Item)intent.getSerializableExtra("item");
+        item = (Item)intent.getSerializableExtra("item");
         
         //String itemID = intent.getStringExtra("itemid");
-        String itemdescription = intent.getStringExtra("itemdescription");
+        itemdescription = intent.getStringExtra("itemdescription");
         String hostName = intent.getStringExtra("hostName");
         
         authData = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        String authToken = authData.getString("AuthToken", "No Data");
-        String uri = authData.getString("URI", "No Data");
+        authToken = authData.getString("AuthToken", "No Data");
+        uri = authData.getString("URI", "No Data");
 
         //timerange作成
         Date now = new Date();
@@ -80,7 +143,7 @@ public class MonitorActivity extends Activity {
         timerange.setTimeFromBeforeHour(1);
         
         
-        ZabbixApiAccess zabbix = new ZabbixApiAccess();
+        zabbix = new ZabbixApiAccess();
 		zabbix.setHttpPost(uri);
 		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);        
      
@@ -105,11 +168,11 @@ public class MonitorActivity extends Activity {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(series);
         
-        final LineChartView lineview = (LineChartView) findViewById(R.id.lineview);
+        lineview = (LineChartView) findViewById(R.id.lineview);
         lineview.setChart(getLineChartView(dataset, itemdescription));    
-        lineview.setOnClickListener(new View.OnClickListener(){
-        	
-        	public void onClick(View v) {
+        lineview.setOnLongClickListener(new View.OnLongClickListener(){
+         	       	
+        	public boolean onLongClick(View v) {
         		View view = lineview.getRootView();
         		view.setDrawingCacheEnabled(true);
         		Bitmap bmp = view.getDrawingCache();
@@ -150,8 +213,22 @@ public class MonitorActivity extends Activity {
         		intent.putExtra(Intent.EXTRA_STREAM, uri);
         		
         		startActivity(intent);
+        		return true;
         	}
+        	
+        	
         });
+        
+        lineview.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return gestureDetector.onTouchEvent(event);
+				// TODO 自動生成されたメソッド・スタブ
+			}
+		});
+        
+        
 	}
 	
 	public AFreeChart getLineChartView(TimeSeriesCollection dataset, String itemdescription) {
@@ -178,5 +255,31 @@ public class MonitorActivity extends Activity {
 	    chart.setTitle(title);
 	    chart.setBackgroundPaintType(new SolidColor(Color.DKGRAY));
 	    return chart;
+	}
+	
+	private AFreeChart getPreviousLineChart(String time) {
+		timerange.setTimeTill(time);
+		timerange.setTimeFromBeforeHour(1);
+		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+		
+		TimeSeries series = new TimeSeries(itemdescription, Second.class);
+        
+        int count = historyDataList.size();
+        Log.e("SIZE", Integer.toString(count));
+        
+        for(int i=0; i < count; i++) {
+        	TimeRange t = new TimeRange();
+        	t.setTimeTill(historyDataList.get(i).getUnixtime());
+        	if(item.getItemValueType().equals("3")) {
+        		series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
+        	}else if (item.getItemValueType().equals("0")) {
+        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
+        	}
+        }
+        
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+        dataset.addSeries(series);
+        return getLineChartView(dataset, itemdescription);
+		
 	}
 }
