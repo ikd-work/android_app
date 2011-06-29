@@ -105,11 +105,13 @@ public class MonitorActivity extends Activity {
 			public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2,
 					float arg3) {
 				if (arg0.getX() < arg1.getX()) {
-					Toast.makeText(MonitorActivity.this, "左", Toast.LENGTH_LONG).show();
+					Toast.makeText(MonitorActivity.this, "1時間戻る", Toast.LENGTH_LONG).show();
 					lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
 					lineview.invalidate();
 				}else if (arg0.getX() > arg1.getX()) {
-					//Toast.makeText(MonitorActivity.this, "右", Toast.LENGTH_LONG).show();
+					Toast.makeText(MonitorActivity.this, "1時間進む", Toast.LENGTH_LONG).show();
+					lineview.setChart(getNextLineChart(timerange.getTimeTill()));
+					lineview.invalidate();
 				}
 				// TODO 自動生成されたメソッド・スタブ
 				return false;
@@ -260,6 +262,33 @@ public class MonitorActivity extends Activity {
 	private AFreeChart getPreviousLineChart(String time) {
 		timerange.setTimeTill(time);
 		timerange.setTimeFromBeforeHour(1);
+		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+		
+		TimeSeries series = new TimeSeries(itemdescription, Second.class);
+        
+        int count = historyDataList.size();
+        Log.e("SIZE", Integer.toString(count));
+        
+        for(int i=0; i < count; i++) {
+        	TimeRange t = new TimeRange();
+        	t.setTimeTill(historyDataList.get(i).getUnixtime());
+        	if(item.getItemValueType().equals("3")) {
+        		series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
+        	}else if (item.getItemValueType().equals("0")) {
+        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
+        	}
+        }
+        
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+        dataset.addSeries(series);
+        return getLineChartView(dataset, itemdescription);
+		
+	}
+	
+	private AFreeChart getNextLineChart(String time) {
+		timerange.setTimeFrom(time);
+		timerange.setTimeTillAfterHour(1);
+		
 		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
 		
 		TimeSeries series = new TimeSeries(itemdescription, Second.class);

@@ -6,7 +6,7 @@
     <string name="title_host_list">Host List</string>
     <string name="title_trigger_list">Trigger List</string>
     <string name="title_host_detail">Host Detail</string>
-    <string name="title_monitor_result">Recent 1 hour</string>
+    <string name="title_monitor_result">Monitoring Graph</string>
     <string name="empty">No Host...</string>
     <string name="logout">Logout</string>
     <string name="refresh">Refresh</string>
