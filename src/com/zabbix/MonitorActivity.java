@@ -79,12 +79,14 @@ public class MonitorActivity extends Activity {
 			@Override
 			public boolean onSingleTapUp(MotionEvent arg0) {
 				// TODO 自動生成されたメソッド・スタブ
+				//Toast.makeText(MonitorActivity.this, "onSingleTapUp", Toast.LENGTH_LONG).show();
 				return false;
 			}
 			
 			@Override
 			public void onShowPress(MotionEvent arg0) {
 				// TODO 自動生成されたメソッド・スタブ
+				//Toast.makeText(MonitorActivity.this, "onShowPress", Toast.LENGTH_LONG).show();
 				
 			}
 			
@@ -92,27 +94,42 @@ public class MonitorActivity extends Activity {
 			public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
 					float arg3) {
 				// TODO 自動生成されたメソッド・スタブ
+				//Toast.makeText(MonitorActivity.this, "onScroll", Toast.LENGTH_LONG).show();
 				return false;
 			}
 			
 			@Override
 			public void onLongPress(MotionEvent arg0) {
 				// TODO 自動生成されたメソッド・スタブ
+				//Toast.makeText(MonitorActivity.this, "onLongPress", Toast.LENGTH_LONG).show();
 				
 			}
 			
 			@Override
 			public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2,
 					float arg3) {
-				if (arg0.getX() < arg1.getX()) {
-					Toast.makeText(MonitorActivity.this, "1時間戻る", Toast.LENGTH_LONG).show();
-					lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
-					lineview.invalidate();
-				}else if (arg0.getX() > arg1.getX()) {
-					Toast.makeText(MonitorActivity.this, "1時間進む", Toast.LENGTH_LONG).show();
-					lineview.setChart(getNextLineChart(timerange.getTimeTill()));
-					lineview.invalidate();
+				
+				int pointerCount = arg0.getPointerCount();
+				if ( pointerCount == 1 ) {
+					if (arg0.getX() < arg1.getX()) {
+						//Toast.makeText(MonitorActivity.this, "1時間戻る", Toast.LENGTH_LONG).show();
+					//	Toast.makeText(MonitorActivity.this, Integer.toString(pointerCount), Toast.LENGTH_LONG).show();
+						lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
+						lineview.invalidate();
+					}else if (arg0.getX() > arg1.getX()) {
+						Toast.makeText(MonitorActivity.this, "1時間進む", Toast.LENGTH_LONG).show();
+						lineview.setChart(getNextLineChart(timerange.getTimeTill()));
+						lineview.invalidate();
+					}
+				}else if ( pointerCount == 2 ) {
+					if ( Math.abs(arg0.getX(0) - arg0.getX(1)) < Math.abs(arg1.getX(0) - arg1.getX(1)) ) {
+//					if ( arg0.getX(0) > arg1.getX(0) & arg0.getX(1) < arg1.getX(1) ) {
+					//	Toast.makeText(MonitorActivity.this, "ピンチイン", Toast.LENGTH_LONG).show();
+					}
+					Log.e("pointerCount",Integer.toString(pointerCount));
 				}
+				
+				
 				// TODO 自動生成されたメソッド・スタブ
 				return false;
 			}
@@ -120,6 +137,17 @@ public class MonitorActivity extends Activity {
 			@Override
 			public boolean onDown(MotionEvent arg0) {
 				// TODO 自動生成されたメソッド・スタブ
+				Toast.makeText(MonitorActivity.this, "onDown", Toast.LENGTH_LONG).show();
+				int pointerCount = arg0.getPointerCount();
+				if ( pointerCount == 1 ) {
+					Log.d("getX(0)",Float.toString(arg0.getX(0)));
+				}else if ( pointerCount == 2 ) {
+					Log.d("getX(0)",Float.toString(arg0.getX(0)));
+					Log.d("getX(1)",Float.toString(arg0.getX(1)));
+				}
+				
+				
+				
 				return false;
 			}
 		});
@@ -223,8 +251,62 @@ public class MonitorActivity extends Activity {
         
         lineview.setOnTouchListener(new View.OnTouchListener() {
 			
+        	float down_x0;
+			float down_x1;
+			float up_x0;
+			float up_x1;
+			
+        	
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				int pointerCount = event.getPointerCount();
+				int action = event.getAction();
+				
+				if ( action == MotionEvent.ACTION_DOWN) {
+					Log.d("Down action",Integer.toString(action));
+					Toast.makeText(MonitorActivity.this, "ACTION_DOWN", Toast.LENGTH_LONG).show();
+					//down_x = event.getX();
+					//down_y = event.getY();
+			
+				}
+				else if ( action == MotionEvent.ACTION_UP) {
+					Log.d("Up action",Integer.toString(action));
+					Toast.makeText(MonitorActivity.this, "ACTION_UP", Toast.LENGTH_LONG).show();
+				}
+				
+				if ( pointerCount == 1 ) {
+				//	Log.d("onTouch getX(0)",Float.toString(event.getX(0)));
+				//	Log.d("historicalgetX(0)",Float.toString(event.getHistoricalX(1)));
+				}else if ( pointerCount == 2 ) {
+					Log.d("action",Integer.toString(action));
+					//if ( action == MotionEvent.ACTION_POINTER_2_DOWN) {
+					if ( action == 261) {
+						down_x0 = event.getX(0);
+						down_x1 = event.getX(1);
+						Log.d("down_x0",Float.toString(down_x0));
+						Log.d("down_x1",Float.toString(down_x1));
+					}
+					else if ( action == MotionEvent.ACTION_POINTER_2_UP) {
+						up_x0 = event.getX(0);
+						up_x1 = event.getX(1);
+						Log.d("up_x0",Float.toString(up_x0));
+						Log.d("up_x1",Float.toString(up_x1));
+						if ( Math.abs(up_x0 - up_x1) < Math.abs(down_x0 - down_x1) ) {
+							Toast.makeText(MonitorActivity.this, "ピンチイン", Toast.LENGTH_LONG).show();
+							down_x0 = 0;
+							down_x1 = 0;
+							up_x0 = 0;
+							up_x1 = 0;
+						}
+					}
+					
+					
+				//	if ( Math.abs(event.getHistoricalX(0) - event.getHistoricalX(1)) < Math.abs(event.getX(0) - event.getX(1)) ) {
+						Log.d("onTouch getX(0)",Float.toString(event.getX(0)));
+						Log.d("onTouch getX(1)",Float.toString(event.getX(1)));
+						//Toast.makeText(MonitorActivity.this, "ピンチイン", Toast.LENGTH_LONG).show();
+				//	}
+				}
 				return gestureDetector.onTouchEvent(event);
 				// TODO 自動生成されたメソッド・スタブ
 			}
