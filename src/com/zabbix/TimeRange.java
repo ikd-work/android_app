@@ -57,4 +57,22 @@ public class TimeRange {
 	    Date time_from_date = cal.getTime();
 	    this.setTranslateDateToTimeFrom(time_from_date);
 	}
+	
+	public void setTimeTillAfterHour(int time) {
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
+		Date time_from_date = new Date();
+		time_from_date.setTime(Long.valueOf(this.time_from)*1000);
+		cal.setTime(time_from_date);
+		cal.add(Calendar.HOUR, time);
+		Date time_till_date = cal.getTime();
+		
+		Date now = new Date();
+		if ( time_till_date.compareTo(now) > 0 ) {
+			this.setTranslateDateToTimeTill(now);
+			this.setTimeFromBeforeHour(1);
+		}else {
+			this.setTranslateDateToTimeTill(time_till_date);
+		}
+		
+	}
 }
