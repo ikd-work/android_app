@@ -107,18 +107,19 @@ public class MonitorActivity extends Activity {
 				int pointerCount = arg0.getPointerCount();
 				if ( pointerCount == 1 ) {
 					if (arg0.getX() < arg1.getX()) {
-						//Toast.makeText(MonitorActivity.this, "1時間戻る", Toast.LENGTH_LONG).show();
+						Toast.makeText(MonitorActivity.this, "戻る", Toast.LENGTH_LONG).show();
 					//	Toast.makeText(MonitorActivity.this, Integer.toString(pointerCount), Toast.LENGTH_LONG).show();
 						lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
 						lineview.invalidate();
 					}else if (arg0.getX() > arg1.getX()) {
-						Toast.makeText(MonitorActivity.this, "1時間進む", Toast.LENGTH_LONG).show();
+						Toast.makeText(MonitorActivity.this, "進む", Toast.LENGTH_LONG).show();
 						lineview.setChart(getNextLineChart(timerange.getTimeTill()));
 						lineview.invalidate();
 					}
 				}else if ( pointerCount == 2 ) {
 					if ( Math.abs(arg0.getX(0) - arg0.getX(1)) < Math.abs(arg1.getX(0) - arg1.getX(1)) ) {
-//					if ( arg0.getX(0) > arg1.getX(0) & arg0.getX(1) < arg1.getX(1) ) {
+						
+						//					if ( arg0.getX(0) > arg1.getX(0) & arg0.getX(1) < arg1.getX(1) ) {
 					//	Toast.makeText(MonitorActivity.this, "ピンチイン", Toast.LENGTH_LONG).show();
 					}
 					Log.e("pointerCount",Integer.toString(pointerCount));
@@ -186,46 +187,7 @@ public class MonitorActivity extends Activity {
         lineview.setOnLongClickListener(new View.OnLongClickListener(){
          	       	
         	public boolean onLongClick(View v) {
-        		View view = lineview.getRootView();
-        		view.setDrawingCacheEnabled(true);
-        		Bitmap bmp = view.getDrawingCache();
-        		String status = Environment.getExternalStorageState();
-        		File dataDir = null;
-        		if ( status.equals(Environment.MEDIA_MOUNTED)) {
-        			dataDir = new File(Environment.getExternalStorageDirectory(),"com.zabbix");
-       				dataDir.mkdir();
-        		}
-        		else {
-        			new AlertDialog.Builder(MonitorActivity.this).setMessage("SDカードがありません").setPositiveButton("OK",null).show();
-        		}
-        		String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dataDir.getName() + File.separator + "graph.png";
-        		if ( bmp != null ) {
-        			ByteArrayOutputStream os = new ByteArrayOutputStream();
-					
-					//FileOutputStream output = openFileOutput(filePath,Context.MODE_WORLD_READABLE);
-					bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
-					Log.e("outputStream",Integer.toString(os.size()));
-					try {
-						os.flush();
-						byte[] w = os.toByteArray();
-						os.close();
-						FileOutputStream out = new FileOutputStream(filePath);
-						out.write(w, 0, w.length);
-						out.flush();
-						
-					} catch (IOException e) {
-						// TODO 自動生成された catch ブロック
-						e.printStackTrace();
-					}
-        		}
-        		Uri uri = Uri.fromFile(new File(filePath));
-        		Intent intent = new Intent();
-        		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        		intent.setAction(Intent.ACTION_SEND);
-        		intent.setType("image/*");
-        		intent.putExtra(Intent.EXTRA_STREAM, uri);
-        		
-        		startActivity(intent);
+        		sendLineViewImage();        		
         		return true;
         	}
         	
@@ -244,6 +206,7 @@ public class MonitorActivity extends Activity {
 				int pointerCount = event.getPointerCount();
 				int action = event.getAction();
 				
+				
 				if ( pointerCount == 2 ) {
 					Log.d("action",Integer.toString(action));
 					if ( action == MotionEvent.ACTION_POINTER_2_DOWN) {
@@ -257,15 +220,19 @@ public class MonitorActivity extends Activity {
 						Log.d("up_x0",Float.toString(up_x0));
 						Log.d("up_x1",Float.toString(up_x1));
 						if ( Math.abs(up_x0 - up_x1) < Math.abs(down_x0 - down_x1) ) {
-							Toast.makeText(MonitorActivity.this, "ピンチイン", Toast.LENGTH_LONG).show();
 							down_x0 = 0;
 							down_x1 = 0;
 							up_x0 = 0;
 							up_x1 = 0;
+							lineview.setChart(getTwiceTimeLineChart(timerange));
+							lineview.invalidate();
 							
 							return true;
 						} else if ( Math.abs(up_x0 - up_x1) > Math.abs(down_x0 - down_x1)) {
-							Toast.makeText(MonitorActivity.this, "ピンチアウト", Toast.LENGTH_LONG).show();
+							
+							lineview.setChart(getHarfTimeLineChart(timerange));
+							lineview.invalidate();
+							
 							return true;
 						}
 					}
@@ -305,10 +272,7 @@ public class MonitorActivity extends Activity {
 	    return chart;
 	}
 	
-	private AFreeChart getPreviousLineChart(String time) {
-		timerange.setTimeTill(time);
-		timerange.setTimeFromBeforeHour(1);
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+	private TimeSeriesCollection getDataSet(ArrayList<HistoryData> historyDataList) {
 		
 		TimeSeries series = new TimeSeries(itemdescription, Second.class);
         
@@ -327,34 +291,95 @@ public class MonitorActivity extends Activity {
         
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(series);
-        return getLineChartView(dataset, itemdescription);
+		return dataset;
+	}
+	
+	private AFreeChart getPreviousLineChart(String time) {
+		double result = Double.parseDouble(timerange.getTimeFrom())-(Double.parseDouble(timerange.getTimeTill())-Double.parseDouble(timerange.getTimeFrom()));
+		int result2 = (int)result;
+		timerange.setTimeTill(timerange.getTimeFrom());
+		timerange.setTimeFrom(Integer.toString(result2));
+		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+		return getLineChartView(getDataSet(historyDataList), itemdescription);
 		
 	}
 	
 	private AFreeChart getNextLineChart(String time) {
+		double result = Double.parseDouble(timerange.getTimeTill())+(Double.parseDouble(timerange.getTimeTill())-Double.parseDouble(timerange.getTimeFrom()));
+		int result2 = (int)result;
+		Date now = new Date();
 		timerange.setTimeFrom(time);
-		timerange.setTimeTillAfterHour(1);
+		if( result2 <= now.getDate() ) {
+			timerange.setTimeTill(Integer.toString(result2));	
+		}else
+		{
+			timerange.setTimeTill(Integer.toString(now.getDate()));
+		}
 		
 		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+        return getLineChartView(getDataSet(historyDataList), itemdescription);
 		
-		TimeSeries series = new TimeSeries(itemdescription, Second.class);
-        
-        int count = historyDataList.size();
-        Log.e("SIZE", Integer.toString(count));
-        
-        for(int i=0; i < count; i++) {
-        	TimeRange t = new TimeRange();
-        	t.setTimeTill(historyDataList.get(i).getUnixtime());
-        	if(item.getItemValueType().equals("3")) {
-        		series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
-        	}else if (item.getItemValueType().equals("0")) {
-        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
-        	}
-        }
-        
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
-        dataset.addSeries(series);
-        return getLineChartView(dataset, itemdescription);
+	}
+	
+	private AFreeChart getHarfTimeLineChart(TimeRange timerange) {
+		double result = (Double.parseDouble(timerange.getTimeFrom())+Double.parseDouble(timerange.getTimeTill()))/2;
+		int result2 = (int)result;
+		this.timerange.setTimeFrom(Integer.toString(result2));
+		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+		Toast.makeText(MonitorActivity.this, "ズーム", Toast.LENGTH_LONG).show();
+        return getLineChartView(getDataSet(historyDataList), itemdescription);
 		
+	}
+	
+	private AFreeChart getTwiceTimeLineChart(TimeRange timerange) {
+		double result = Double.parseDouble(timerange.getTimeFrom())-(Double.parseDouble(timerange.getTimeTill())-Double.parseDouble(timerange.getTimeFrom()));
+		int result2 = (int)result;
+		this.timerange.setTimeFrom(Integer.toString(result2));
+		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+		Toast.makeText(MonitorActivity.this, "ワイド", Toast.LENGTH_LONG).show();
+		return getLineChartView(getDataSet(historyDataList), itemdescription);
+	}
+	
+	private void sendLineViewImage() {
+		View view = lineview.getRootView();
+		view.setDrawingCacheEnabled(true);
+		Bitmap bmp = view.getDrawingCache();
+		String status = Environment.getExternalStorageState();
+		File dataDir = null;
+		if ( status.equals(Environment.MEDIA_MOUNTED)) {
+			dataDir = new File(Environment.getExternalStorageDirectory(),"com.zabbix");
+				dataDir.mkdir();
+		}
+		else {
+			new AlertDialog.Builder(MonitorActivity.this).setMessage("SDカードがありません").setPositiveButton("OK",null).show();
+		}
+		String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dataDir.getName() + File.separator + "graph.png";
+		if ( bmp != null ) {
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			
+			//FileOutputStream output = openFileOutput(filePath,Context.MODE_WORLD_READABLE);
+			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
+			Log.e("outputStream",Integer.toString(os.size()));
+			try {
+				os.flush();
+				byte[] w = os.toByteArray();
+				os.close();
+				FileOutputStream out = new FileOutputStream(filePath);
+				out.write(w, 0, w.length);
+				out.flush();
+				
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
+		}
+		Uri uri = Uri.fromFile(new File(filePath));
+		Intent intent = new Intent();
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		intent.setAction(Intent.ACTION_SEND);
+		intent.setType("image/*");
+		intent.putExtra(Intent.EXTRA_STREAM, uri);
+		
+		startActivity(intent);
 	}
 }
