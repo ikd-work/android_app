@@ -120,6 +120,7 @@ public class HostDetailActivity extends Activity{
 					}
 					intent.putExtra("item", item);
 					intent.putExtra("itemdescription", item.getItemDescription());
+					intent.putExtra("itemunits",item.getItemUnits());
 					intent.putExtra("hostName", hostName);
 					startActivity(intent);
 				}

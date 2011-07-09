@@ -319,6 +319,7 @@ public class ZabbixApiAccess {
 					item.setItemKey(resultObject.getJSONObject(i).getString("key_"));
 					item.setItemValueType(resultObject.getJSONObject(i).getString("value_type"));
 					item.setItemValue(resultObject.getJSONObject(i).getString("lastvalue"));
+					item.setItemUnits(resultObject.getJSONObject(i).getString("units"));
 					//item.setItemValue(this.getItemValue(authKey,item));
 					//hostList.add(resultObject.getJSONObject(i).getString("host"));
 					itemList.add(item);

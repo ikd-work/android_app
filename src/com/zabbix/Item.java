@@ -8,12 +8,14 @@ public class Item implements Serializable {
 	private String itemKey;
 	private String itemValue;
 	private String itemValueType;
+	private String itemUnits;
 	
 	public Item() {
 		itemId = "";
 		itemDescription = "";
 		itemKey = "";
 		itemValue = "";
+		itemUnits = "";
 	}
 	
 	public void setItemId(String itemid) {
@@ -36,6 +38,10 @@ public class Item implements Serializable {
 		itemValueType = itemvaluetype;
 	}
 	
+	public void setItemUnits(String itemunits) {
+		itemUnits = itemunits;
+	}
+	
 	public String getItemId() {
 		return itemId;
 	}
@@ -54,6 +60,10 @@ public class Item implements Serializable {
 	
 	public String getItemValueType() {
 		return itemValueType;
+	}
+	
+	public String getItemUnits() {
+		return itemUnits;
 	}
 	
 }

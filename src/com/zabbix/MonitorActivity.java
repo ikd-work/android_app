@@ -66,6 +66,7 @@ public class MonitorActivity extends Activity {
 	GestureDetector gestureDetector;
 	LineChartView lineview;
 	String itemdescription;
+	String itemunits;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -146,6 +147,7 @@ public class MonitorActivity extends Activity {
         //String itemID = intent.getStringExtra("itemid");
         itemdescription = intent.getStringExtra("itemdescription");
         String hostName = intent.getStringExtra("hostName");
+        itemunits = intent.getStringExtra("itemunits");
         
         authData = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
         authToken = authData.getString("AuthToken", "No Data");
@@ -249,7 +251,7 @@ public class MonitorActivity extends Activity {
 	public AFreeChart getLineChartView(TimeSeriesCollection dataset, String itemdescription) {
 		TextTitle title = new TextTitle(itemdescription);
 		title.setPaintType(new SolidColor(Color.WHITE));
-		AFreeChart chart = ChartFactory.createTimeSeriesChart("", "time", "data", dataset, true, false, false);
+		AFreeChart chart = ChartFactory.createTimeSeriesChart("", "time", "data("+itemunits+")", dataset, true, false, false);
 		XYPlot plot = (XYPlot) chart.getXYPlot();
 		plot.setBackgroundPaintType(new SolidColor(Color.BLACK));
 		DateAxis domainAxis = (DateAxis)plot.getDomainAxis();
@@ -305,15 +307,22 @@ public class MonitorActivity extends Activity {
 	}
 	
 	private AFreeChart getNextLineChart(String time) {
-		double result = Double.parseDouble(timerange.getTimeTill())+(Double.parseDouble(timerange.getTimeTill())-Double.parseDouble(timerange.getTimeFrom()));
+		double dif = Double.parseDouble(timerange.getTimeTill())-Double.parseDouble(timerange.getTimeFrom());
+		double result = Double.parseDouble(timerange.getTimeTill())+dif;
 		int result2 = (int)result;
+		int dif2 = (int)dif;
 		Date now = new Date();
+		long now_unixtime = now.getTime()/1000;
+		int no = (int)now_unixtime;
+		Log.d("now_unixtime",Integer.toString(no));
 		timerange.setTimeFrom(time);
-		if( result2 <= now.getDate() ) {
+		if( result2 <= no ) {
 			timerange.setTimeTill(Integer.toString(result2));	
 		}else
 		{
-			timerange.setTimeTill(Integer.toString(now.getDate()));
+			timerange.setTimeTill(Integer.toString(no));
+			timerange.setTimeFrom(Integer.toString(no-dif2));
+			Toast.makeText(MonitorActivity.this, "ÅV", Toast.LENGTH_LONG).show();
 		}
 		
 		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
