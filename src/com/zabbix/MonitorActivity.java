@@ -38,6 +38,7 @@ import org.afree.graphics.geom.Font;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,6 +47,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -67,6 +69,7 @@ public class MonitorActivity extends Activity {
 	LineChartView lineview;
 	String itemdescription;
 	String itemunits;
+	TimeSeriesCollection dataset = new TimeSeriesCollection();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +113,7 @@ public class MonitorActivity extends Activity {
 					if (arg0.getX() < arg1.getX()) {
 						Toast.makeText(MonitorActivity.this, "戻る", Toast.LENGTH_LONG).show();
 					//	Toast.makeText(MonitorActivity.this, Integer.toString(pointerCount), Toast.LENGTH_LONG).show();
+						//new LoadChartAsyncTask().execute();
 						lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
 						lineview.invalidate();
 					}else if (arg0.getX() > arg1.getX()) {
@@ -251,7 +255,7 @@ public class MonitorActivity extends Activity {
 	public AFreeChart getLineChartView(TimeSeriesCollection dataset, String itemdescription) {
 		TextTitle title = new TextTitle(itemdescription);
 		title.setPaintType(new SolidColor(Color.WHITE));
-		AFreeChart chart = ChartFactory.createTimeSeriesChart("", "time", "data("+itemunits+")", dataset, true, false, false);
+		AFreeChart chart = ChartFactory.createTimeSeriesChart("", "time", "data("+itemunits+")", this.dataset, true, false, false);
 		XYPlot plot = (XYPlot) chart.getXYPlot();
 		plot.setBackgroundPaintType(new SolidColor(Color.BLACK));
 		DateAxis domainAxis = (DateAxis)plot.getDomainAxis();
@@ -274,8 +278,9 @@ public class MonitorActivity extends Activity {
 	    return chart;
 	}
 	
-	private TimeSeriesCollection getDataSet(ArrayList<HistoryData> historyDataList) {
-		
+	private TimeSeriesCollection getDataSet() {
+		new LoadChartAsyncTask().execute();
+		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
 		TimeSeries series = new TimeSeries(itemdescription, Second.class);
         
         int count = historyDataList.size();
@@ -291,9 +296,10 @@ public class MonitorActivity extends Activity {
         	}
         }
         
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
+      //  TimeSeriesCollection dataset = new TimeSeriesCollection();
+        dataset.removeAllSeries();
         dataset.addSeries(series);
-		return dataset;
+		return null;
 	}
 	
 	private AFreeChart getPreviousLineChart(String time) {
@@ -301,8 +307,8 @@ public class MonitorActivity extends Activity {
 		int result2 = (int)result;
 		timerange.setTimeTill(timerange.getTimeFrom());
 		timerange.setTimeFrom(Integer.toString(result2));
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
-		return getLineChartView(getDataSet(historyDataList), itemdescription);
+		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+		return getLineChartView(getDataSet(), itemdescription);
 		
 	}
 	
@@ -325,8 +331,8 @@ public class MonitorActivity extends Activity {
 			Toast.makeText(MonitorActivity.this, "最新", Toast.LENGTH_LONG).show();
 		}
 		
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
-        return getLineChartView(getDataSet(historyDataList), itemdescription);
+		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+        return getLineChartView(getDataSet(), itemdescription);
 		
 	}
 	
@@ -334,9 +340,9 @@ public class MonitorActivity extends Activity {
 		double result = (Double.parseDouble(timerange.getTimeFrom())+Double.parseDouble(timerange.getTimeTill()))/2;
 		int result2 = (int)result;
 		this.timerange.setTimeFrom(Integer.toString(result2));
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
 		Toast.makeText(MonitorActivity.this, "ズーム", Toast.LENGTH_LONG).show();
-        return getLineChartView(getDataSet(historyDataList), itemdescription);
+        return getLineChartView(getDataSet(), itemdescription);
 		
 	}
 	
@@ -344,9 +350,9 @@ public class MonitorActivity extends Activity {
 		double result = Double.parseDouble(timerange.getTimeFrom())-(Double.parseDouble(timerange.getTimeTill())-Double.parseDouble(timerange.getTimeFrom()));
 		int result2 = (int)result;
 		this.timerange.setTimeFrom(Integer.toString(result2));
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
 		Toast.makeText(MonitorActivity.this, "ワイド", Toast.LENGTH_LONG).show();
-		return getLineChartView(getDataSet(historyDataList), itemdescription);
+		return getLineChartView(getDataSet(), itemdescription);
 	}
 	
 	private void sendLineViewImage() {
@@ -391,4 +397,58 @@ public class MonitorActivity extends Activity {
 		
 		startActivity(intent);
 	}
+	class LoadChartAsyncTask extends AsyncTask<Void, Void, String>{
+		
+		private ProgressDialog progressDialog = null;
+
+		protected void onPreExecute() {
+			progressDialog = new ProgressDialog(MonitorActivity.this);
+			progressDialog.setMessage("now loading...");
+			progressDialog.setIndeterminate(false);
+			progressDialog.setCancelable(true);
+			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			progressDialog.setProgress(0);
+			progressDialog.setMax(100);
+			progressDialog.show();
+			
+			
+		}
+		
+		protected void onProgressUpdate(Integer... values) {
+			progressDialog.setProgress(values[0]);
+		}
+		
+		@Override
+		protected String doInBackground(Void... arg0) {
+			// TODO 自動生成されたメソッド・スタブ
+			//lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
+			//lineview.invalidate();
+			
+			ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+			TimeSeries series = new TimeSeries(itemdescription, Second.class);
+	        
+	        int count = historyDataList.size();
+	        Log.e("SIZE", Integer.toString(count));
+	        
+	        for(int i=0; i < count; i++) {
+	        	TimeRange t = new TimeRange();
+	        	t.setTimeTill(historyDataList.get(i).getUnixtime());
+	        	if(item.getItemValueType().equals("3")) {
+	        		series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
+	        	}else if (item.getItemValueType().equals("0")) {
+	        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
+	        	}
+	        }
+	        
+	       // TimeSeriesCollection dataset = new TimeSeriesCollection();
+	        dataset.removeAllSeries();
+	        dataset.addSeries(series);
+			return null;
+		}
+		
+		protected void onPostExecute(String result) {
+			progressDialog.dismiss();
+		}
+	}
+
 }
