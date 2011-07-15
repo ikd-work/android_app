@@ -114,20 +114,15 @@ public class MonitorActivity extends Activity {
 						Toast.makeText(MonitorActivity.this, "戻る", Toast.LENGTH_LONG).show();
 					//	Toast.makeText(MonitorActivity.this, Integer.toString(pointerCount), Toast.LENGTH_LONG).show();
 						//new LoadChartAsyncTask().execute();
-						lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
-						lineview.invalidate();
+						getPreviousLineChart(timerange.getTimeFrom());
+						//	lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
+					//	lineview.invalidate();
 					}else if (arg0.getX() > arg1.getX()) {
 						Toast.makeText(MonitorActivity.this, "進む", Toast.LENGTH_LONG).show();
-						lineview.setChart(getNextLineChart(timerange.getTimeTill()));
-						lineview.invalidate();
+						getNextLineChart(timerange.getTimeTill());
+//						lineview.setChart(getNextLineChart(timerange.getTimeTill()));
+//						lineview.invalidate();
 					}
-				}else if ( pointerCount == 2 ) {
-					if ( Math.abs(arg0.getX(0) - arg0.getX(1)) < Math.abs(arg1.getX(0) - arg1.getX(1)) ) {
-						
-						//					if ( arg0.getX(0) > arg1.getX(0) & arg0.getX(1) < arg1.getX(1) ) {
-					//	Toast.makeText(MonitorActivity.this, "ピンチイン", Toast.LENGTH_LONG).show();
-					}
-					Log.e("pointerCount",Integer.toString(pointerCount));
 				}
 				
 				
@@ -164,44 +159,21 @@ public class MonitorActivity extends Activity {
         
         
         zabbix = new ZabbixApiAccess();
-		zabbix.setHttpPost(uri);
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);        
-     
-        TextView textViewMonitor = (TextView)this.findViewById(R.id.monitor_name);
-        textViewMonitor.setText(hostName);
-  
-        TimeSeries series = new TimeSeries(itemdescription, Second.class);
-        
-        int count = historyDataList.size();
-        Log.e("SIZE", Integer.toString(count));
-        
-        for(int i=0; i < count; i++) {
-        	TimeRange t = new TimeRange();
-        	t.setTimeTill(historyDataList.get(i).getUnixtime());
-        	if(item.getItemValueType().equals("3")) {
-        		series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
-        	}else if (item.getItemValueType().equals("0")) {
-        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
-        	}
-        }
-        
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
-        dataset.addSeries(series);
-        
+		zabbix.setHttpPost(uri);      
         lineview = (LineChartView) findViewById(R.id.lineview);
-        lineview.setChart(getLineChartView(dataset, itemdescription));    
-        lineview.setOnLongClickListener(new View.OnLongClickListener(){
-         	       	
+       // getLineChartView(getDataSet(), itemdescription);
+        getDataSet();
+        getLineChartView(itemdescription);
+        lineview.setOnLongClickListener(new View.OnLongClickListener(){      	
         	public boolean onLongClick(View v) {
-        		sendLineViewImage();        		
+            	sendLineViewImage();   
         		return true;
         	}
         	
         	
         });
-        
         lineview.setOnTouchListener(new View.OnTouchListener() {
-			
+        	
         	float down_x0;
 			float down_x1;
 			float up_x0;
@@ -211,7 +183,6 @@ public class MonitorActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				int pointerCount = event.getPointerCount();
 				int action = event.getAction();
-				
 				
 				if ( pointerCount == 2 ) {
 					Log.d("action",Integer.toString(action));
@@ -249,10 +220,10 @@ public class MonitorActivity extends Activity {
 			}
 		});
         
-        
 	}
 	
-	public AFreeChart getLineChartView(TimeSeriesCollection dataset, String itemdescription) {
+//	public AFreeChart getLineChartView(TimeSeriesCollection dataset, String itemdescription) {
+	public AFreeChart getLineChartView(String itemdescription) {
 		TextTitle title = new TextTitle(itemdescription);
 		title.setPaintType(new SolidColor(Color.WHITE));
 		AFreeChart chart = ChartFactory.createTimeSeriesChart("", "time", "data("+itemunits+")", this.dataset, true, false, false);
@@ -280,25 +251,6 @@ public class MonitorActivity extends Activity {
 	
 	private TimeSeriesCollection getDataSet() {
 		new LoadChartAsyncTask().execute();
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
-		TimeSeries series = new TimeSeries(itemdescription, Second.class);
-        
-        int count = historyDataList.size();
-        Log.e("SIZE", Integer.toString(count));
-        
-        for(int i=0; i < count; i++) {
-        	TimeRange t = new TimeRange();
-        	t.setTimeTill(historyDataList.get(i).getUnixtime());
-        	if(item.getItemValueType().equals("3")) {
-        		series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
-        	}else if (item.getItemValueType().equals("0")) {
-        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
-        	}
-        }
-        
-      //  TimeSeriesCollection dataset = new TimeSeriesCollection();
-        dataset.removeAllSeries();
-        dataset.addSeries(series);
 		return null;
 	}
 	
@@ -307,9 +259,9 @@ public class MonitorActivity extends Activity {
 		int result2 = (int)result;
 		timerange.setTimeTill(timerange.getTimeFrom());
 		timerange.setTimeFrom(Integer.toString(result2));
-		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
-		return getLineChartView(getDataSet(), itemdescription);
-		
+		//return getLineChartView(getDataSet(), itemdescription);
+		getDataSet();
+		return getLineChartView(itemdescription);
 	}
 	
 	private AFreeChart getNextLineChart(String time) {
@@ -332,8 +284,9 @@ public class MonitorActivity extends Activity {
 		}
 		
 		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
-        return getLineChartView(getDataSet(), itemdescription);
-		
+       // return getLineChartView(getDataSet(), itemdescription);
+		getDataSet();
+		return getLineChartView(itemdescription);
 	}
 	
 	private AFreeChart getHarfTimeLineChart(TimeRange timerange) {
@@ -342,8 +295,9 @@ public class MonitorActivity extends Activity {
 		this.timerange.setTimeFrom(Integer.toString(result2));
 		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
 		Toast.makeText(MonitorActivity.this, "ズーム", Toast.LENGTH_LONG).show();
-        return getLineChartView(getDataSet(), itemdescription);
-		
+        //return getLineChartView(getDataSet(), itemdescription);
+		getDataSet();
+		return getLineChartView(itemdescription);
 	}
 	
 	private AFreeChart getTwiceTimeLineChart(TimeRange timerange) {
@@ -352,7 +306,9 @@ public class MonitorActivity extends Activity {
 		this.timerange.setTimeFrom(Integer.toString(result2));
 		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
 		Toast.makeText(MonitorActivity.this, "ワイド", Toast.LENGTH_LONG).show();
-		return getLineChartView(getDataSet(), itemdescription);
+		//return getLineChartView(getDataSet(), itemdescription);
+		getDataSet();
+		return getLineChartView(itemdescription);
 	}
 	
 	private void sendLineViewImage() {
@@ -425,8 +381,9 @@ public class MonitorActivity extends Activity {
 			//lineview.invalidate();
 			
 			ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
+			Log.d("backgournd","back");
 			TimeSeries series = new TimeSeries(itemdescription, Second.class);
-	        
+			Log.d("backgournd","back2");
 	        int count = historyDataList.size();
 	        Log.e("SIZE", Integer.toString(count));
 	        
@@ -438,6 +395,12 @@ public class MonitorActivity extends Activity {
 	        	}else if (item.getItemValueType().equals("0")) {
 	        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
 	        	}
+	        	double progress = (double)i/(double)count*100;
+	        	if (i%10==0){
+	        		onProgressUpdate((int)progress);
+		        	Log.d("progress",Double.toString(progress));
+	        	}
+	        	
 	        }
 	        
 	       // TimeSeriesCollection dataset = new TimeSeriesCollection();
@@ -448,6 +411,9 @@ public class MonitorActivity extends Activity {
 		
 		protected void onPostExecute(String result) {
 			progressDialog.dismiss();
+			//lineview.setChart(getLineChartView(dataset,itemdescription));
+			lineview.setChart(getLineChartView(itemdescription));
+			lineview.invalidate();
 		}
 	}
 

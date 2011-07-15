@@ -1,7 +1,11 @@
 package com.zabbix;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import org.afree.chart.AFreeChart;
 import org.afree.chart.ChartFactory;
+import org.afree.chart.axis.DateAxis;
 import org.afree.chart.axis.NumberAxis;
 import org.afree.chart.plot.PlotOrientation;
 import org.afree.chart.plot.XYPlot;
@@ -37,6 +41,26 @@ public class LineChartView extends View {
 		//グラフ描画サイズ計算
 		width = width - 20;
 		height = height - 170;
+		chart = ChartFactory.createTimeSeriesChart("", "", "", null, true, false, false);
+		XYPlot plot = (XYPlot) chart.getXYPlot();
+		plot.setBackgroundPaintType(new SolidColor(Color.BLACK));
+		DateAxis domainAxis = (DateAxis)plot.getDomainAxis();
+	    domainAxis.setAxisLinePaintType(new SolidColor(Color.WHITE));
+	    domainAxis.setTickLabelPaintType(new SolidColor(Color.CYAN));
+	    domainAxis.setLabelPaintType(new SolidColor(Color.CYAN));
+	    NumberAxis rangeAxis = (NumberAxis)plot.getRangeAxis();
+	    rangeAxis.setAxisLinePaintType(new SolidColor(Color.WHITE));
+	    rangeAxis.setTickLabelPaintType(new SolidColor(Color.CYAN));
+	    rangeAxis.setLabelPaintType(new SolidColor(Color.CYAN));
+	    NumberFormat nf = NumberFormat.getInstance();
+	    DecimalFormat df = (DecimalFormat)nf;
+	    df.applyPattern("###,###.#");
+	    rangeAxis.setNumberFormatOverride(df);
+	    plot.setDomainGridlinePaintType(new SolidColor(Color.DKGRAY));
+	    plot.setRangeGridlinePaintType(new SolidColor(Color.DKGRAY));
+	    chart.setBorderPaintType(new SolidColor(Color.DKGRAY));
+	    chart.setBackgroundPaintType(new SolidColor(Color.DKGRAY));
+	    chart.setBackgroundPaintType(new SolidColor(Color.DKGRAY));
 		
 		
 	}
