@@ -1,6 +1,8 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.util.ArrayList;
+
+import com.zabbix.R;
 
 import android.content.Context;
 import android.graphics.Color;

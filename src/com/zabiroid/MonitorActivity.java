@@ -1,4 +1,4 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,6 +35,8 @@ import org.afree.data.xy.DefaultXYDataset;
 import org.afree.graphics.PaintType;
 import org.afree.graphics.SolidColor;
 import org.afree.graphics.geom.Font;
+
+import com.zabbix.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

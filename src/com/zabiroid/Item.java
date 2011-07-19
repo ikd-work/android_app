@@ -1,4 +1,4 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.io.Serializable;
 

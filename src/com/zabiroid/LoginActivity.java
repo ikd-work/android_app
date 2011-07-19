@@ -1,4 +1,4 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,6 +21,8 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.zabbix.R;
 
 import android.app.Activity;
 import android.content.Intent;

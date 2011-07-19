@@ -49,7 +49,7 @@
                 <action android:name="android.intent.action.MAIN"></action>
             </intent-filter>
         </activity>
-        <activity android:name="TriggerActivity">
+        <activity android:name="com.zabiroid.TriggerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"></action>
             </intent-filter>
