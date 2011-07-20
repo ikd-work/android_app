@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.zabbix.R;
+import com.zabiroid.R;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -2,7 +2,7 @@ package com.zabiroid;
 
 import java.util.ArrayList;
 
-import com.zabbix.R;
+import com.zabiroid.R;
 
 import android.app.Activity;
 import android.content.Intent;

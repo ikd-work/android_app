@@ -36,7 +36,7 @@ import org.afree.graphics.PaintType;
 import org.afree.graphics.SolidColor;
 import org.afree.graphics.geom.Font;
 
-import com.zabbix.R;
+import com.zabiroid.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

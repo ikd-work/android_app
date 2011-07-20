@@ -3,7 +3,7 @@ package com.zabiroid;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.zabbix.R;
+import com.zabiroid.R;
 
 import android.content.Context;
 import android.graphics.Color;
