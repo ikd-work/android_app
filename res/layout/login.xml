@@ -16,6 +16,13 @@
     	android:layout_height="wrap_content"
     	android:hint="Input hostname"
     />
+    
+    <CheckBox
+    	android:id="@+id/https_check"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="HTTPS通信"
+    />
 	<TextView  
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" 

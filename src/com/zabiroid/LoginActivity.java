@@ -34,6 +34,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +59,23 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.login);
         getWindow().setFeatureDrawableResource( Window.FEATURE_LEFT_ICON, R.drawable.zabbix );
         setTitle(R.string.title_login);
+        final CheckBox checkBox = (CheckBox)findViewById(R.id.https_check);
+        checkBox.setChecked(false);
+        checkBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
+
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+				// TODO 自動生成されたメソッド・スタブ
+				if ( checkBox.isChecked() != false ) {
+					checkBox.setChecked(true);	
+				}
+				else {
+					checkBox.setChecked(false);
+				}
+				
+			}
+        	
+        });
         Button button = (Button)findViewById(R.id.login_button);
         button.setOnClickListener(new View.OnClickListener(){
         	
