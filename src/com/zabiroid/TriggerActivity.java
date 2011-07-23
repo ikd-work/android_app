@@ -1,6 +1,8 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.util.ArrayList;
+
+import com.zabiroid.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -40,9 +42,8 @@ public class TriggerActivity extends Activity {
         String hostName = intent.getStringExtra("hostname");
         
         
-		zabbix = new ZabbixApiAccess();
-		zabbix.setHttpPost(uri);
-		ArrayList<Trigger> eventList = zabbix.getTriggerList(authToken, hostId, 20);
+		zabbix = new ZabbixApiAccess(uri,authToken);
+		ArrayList<Trigger> eventList = zabbix.getTriggerList(hostId, 20);
 		
 		if( eventList != null) {
 			adapter = new TriggerListAdapter(this, eventList);		    

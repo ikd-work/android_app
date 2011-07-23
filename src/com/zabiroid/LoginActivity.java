@@ -1,4 +1,4 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -22,6 +22,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.zabiroid.R;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +34,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +59,23 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.login);
         getWindow().setFeatureDrawableResource( Window.FEATURE_LEFT_ICON, R.drawable.zabbix );
         setTitle(R.string.title_login);
+        final CheckBox checkBox = (CheckBox)findViewById(R.id.https_check);
+        checkBox.setChecked(false);
+        checkBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
+
+			
+			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+				// TODO 自動生成されたメソッド・スタブ
+				if ( checkBox.isChecked() != false ) {
+					checkBox.setChecked(true);	
+				}
+				else {
+					checkBox.setChecked(false);
+				}
+				
+			}
+        	
+        });
         Button button = (Button)findViewById(R.id.login_button);
         button.setOnClickListener(new View.OnClickListener(){
         	
@@ -66,17 +87,17 @@ public class LoginActivity extends Activity {
         		CharSequence host = hostText.getText();
         		CharSequence account_name = editText.getText();
         		CharSequence pass = passText.getText();
-        		ZabbixApiAccess zabbix = new ZabbixApiAccess();
-        		zabbix.setHost(host.toString());
-        		String uri = zabbix.makeUri(host.toString());
-        		zabbix.setHttpPost(uri);
-        		zabbix.setBasicJSONParams();
-        		zabbix.setMethod("user.authenticate");
+        		ZabbixApiAccess zabbix = new ZabbixApiAccess(host.toString());
+        		//zabbix.setHost(host.toString());
+        		//String uri = zabbix.makeUri(host.toString());
+        		//zabbix.setHttpPost(uri);
+        		//zabbix.setBasicJSONParams();
+        		//zabbix.setMethod("user.authenticate");
         		String auth_key = zabbix.zabbixAuthenticate(account_name.toString(), pass.toString());
         		
         		authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
         		authData.edit().putString("AuthToken", auth_key).commit();
-        		authData.edit().putString("URI", uri).commit();
+        		authData.edit().putString("URI", zabbix.getUri()).commit();
         		
         		if ( auth_key != "error" ){
         			Log.e("auth_keyOK",auth_key);

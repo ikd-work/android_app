@@ -1,6 +1,8 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.util.ArrayList;
+
+import com.zabiroid.R;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -39,9 +41,8 @@ public class HostListActivity extends Activity {
         authToken = authData.getString("AuthToken", "No Data");
         uri = authData.getString("URI", "No Data");
     
-		zabbix = new ZabbixApiAccess();
-		zabbix.setHttpPost(uri);
-		hostList = zabbix.getHostList(authToken, "all");
+		zabbix = new ZabbixApiAccess(uri,authToken);
+		hostList = zabbix.getHostList("all");
 		
 		if( hostList != null) {
 			adapter = new HostListAdapter(this, hostList);		    
@@ -84,7 +85,7 @@ public class HostListActivity extends Activity {
     		Intent intent = new Intent(HostListActivity.this,LoginActivity.class);
     		startActivity(intent);
     	}else if( item.getItemId() == 2) {
-    		hostList = zabbix.getHostList(authToken, "all");
+    		hostList = zabbix.getHostList("all");
     		adapter = new HostListAdapter(this, hostList);
     		list.setAdapter(adapter);
     	}else if( item.getItemId() == 3) {

@@ -1,18 +1,34 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +49,26 @@ public class ZabbixApiAccess {
 	private ArrayList<Item> itemList = new ArrayList<Item>();
 	private ArrayList<String> itemIdList = new ArrayList<String>();
 	private int position = 0;
+	private String authToken;
 	
+	ZabbixApiAccess(String host){
+		this.host = host;
+		this.uri = makeUri(host);
+		this.setBasicJSONParams();
+	}
+	
+	ZabbixApiAccess(String uri,String authToken){
+		this.uri = uri;
+		this.authToken = authToken;
+		try {
+			this.jsonObject.put("auth", authToken);
+		} catch (JSONException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		this.setBasicJSONParams();
+		
+	}
 	public void setHost(String host)
 	{
 		this.host = host;
@@ -55,7 +90,7 @@ public class ZabbixApiAccess {
 		return this.uri;
 	}
 	
-	public String makeUri(String host)
+	private String makeUri(String host)
 	{
 		Uri.Builder uriBuilder = new Uri.Builder();
     	uriBuilder.scheme("http");
@@ -64,14 +99,17 @@ public class ZabbixApiAccess {
     	this.uri = Uri.decode(uriBuilder.build().toString());
     	return this.uri;
 	}
-	
-	public void setHttpPost(String uri)
+	private String makeHttpsUri(String host)
 	{
-		httpPost = new HttpPost(uri);
-		httpPost.setHeader("Content-type", CONTENT_TYPE);
+		Uri.Builder uriBuilder = new Uri.Builder();
+    	uriBuilder.scheme("https");
+    	uriBuilder.authority(host);
+    	uriBuilder.path(ZABBIX_API_PATH);
+    	this.uri = Uri.decode(uriBuilder.build().toString());
+    	return this.uri;
 	}
 	
-	public void setBasicJSONParams()
+	private void setBasicJSONParams()
 	{
 		try {
 			jsonObject.put("jsonrpc", "2.0");
@@ -91,7 +129,6 @@ public class ZabbixApiAccess {
 	
 	public void setMethod(String method)
 	{
-		this.setBasicJSONParams();
 		try {
 			jsonObject.put("method", method);
 		} catch (JSONException e) {
@@ -100,8 +137,7 @@ public class ZabbixApiAccess {
 		}
 	}
 	
-	public String getMethod()
-	{
+	public String getMethod() {
 		try {
 			return this.jsonObject.getString("method");
 		} catch (JSONException e) {
@@ -110,10 +146,140 @@ public class ZabbixApiAccess {
 			return "error";
 		}
 	}
+ 	
+	private JSONObject httpAccess() {
+		httpPost = new HttpPost(uri);
+		JSONObject jsonEntity = null;
+		httpPost.setHeader("Content-type", CONTENT_TYPE);
+		StringEntity stringEntity = null;
+		try {
+			stringEntity = new StringEntity(jsonObject.toString());
+		} catch (UnsupportedEncodingException e1) {
+			// TODO 自動生成された catch ブロック
+			e1.printStackTrace();
+		}
+		httpPost.setEntity(stringEntity);
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		try {
+			HttpResponse httpResponse = httpClient.execute(httpPost);
+			int statusCode = httpResponse.getStatusLine().getStatusCode();
+			if (statusCode == HttpStatus.SC_OK)
+			{
+				String entity = EntityUtils.toString(httpResponse.getEntity());
+				try {
+					jsonEntity = new JSONObject(entity);
+				} catch (JSONException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+				return jsonEntity;
+				
+			}else
+			{
+				
+				return null;
+			}
+			
+		} catch (ClientProtocolException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return null;
+		}	
+	}
 	
+	private JSONObject httpsAccess() {
+		httpPost = new HttpPost(this.makeHttpsUri(this.host));
+		JSONObject jsonEntity = null;
+		httpPost.setHeader("Content-type", CONTENT_TYPE);
+		StringEntity stringEntity = null;
+		try {
+			stringEntity = new StringEntity(jsonObject.toString());
+		} catch (UnsupportedEncodingException e1) {
+			// TODO 自動生成された catch ブロック
+			e1.printStackTrace();
+		}
+		httpPost.setEntity(stringEntity);
+		
+		
+		 HttpClient httpclient = new DefaultHttpClient();
+		 HttpContext httpcontext = new BasicHttpContext();
+		 
+		 KeyStore trustStore = null;
+		try {
+			trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+		} catch (KeyStoreException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		 try {
+			trustStore.load(null,null);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		 SSLSocketFactory sf = null;
+		try {
+			sf = new MySSLSocketFactory(trustStore);
+		} catch (KeyManagementException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (UnrecoverableKeyException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		 Scheme https = new Scheme("https", sf, 443);
+	     httpclient.getConnectionManager().getSchemeRegistry().register(https);
+		 try {
+			 Log.e("httpPost",httpPost.getURI().toString());
+			HttpResponse httpResponse = httpclient.execute(httpPost);
+			Log.e("httpREsponse",httpResponse.toString());
+			int statusCode = httpResponse.getStatusLine().getStatusCode();
+			if (statusCode == HttpStatus.SC_OK)
+			{
+				String entity = EntityUtils.toString(httpResponse.getEntity());
+				try {
+					jsonEntity = new JSONObject(entity);
+				} catch (JSONException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+				return jsonEntity;
+				
+			}else
+			{
+				
+				return null;
+			}
+		} catch (ClientProtocolException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return null;
+		}
+		 
+	}
 	
-	public String zabbixAuthenticate(String account_name, String pass)
-	{
+	public String zabbixAuthenticate(String account_name, String pass) {
+		this.setMethod("user.authenticate");
 		JSONObject params = new JSONObject();
 		try {
 			params.put("user", account_name);
@@ -123,105 +289,18 @@ public class ZabbixApiAccess {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
-		
-		StringEntity stringEntity = null ;
+		JSONObject response = this.httpAccess();
 		try {
-			stringEntity = new StringEntity(jsonObject.toString());
-			try {
-				Log.e("APIcheck",EntityUtils.toString(stringEntity));
-			} catch (ParseException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			}
-		} catch (UnsupportedEncodingException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
-		httpPost.setEntity(stringEntity);
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-    	try {
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			int statusCode = httpResponse.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK)
-			{
-				String entity = EntityUtils.toString(httpResponse.getEntity());
-				JSONObject jsonEntity = new JSONObject(entity);
-				return jsonEntity.getString("result");
-				
-			}else
-			{
-				return "error";
-			}
-			//return EntityUtils.toString(httpResponse.getEntity());
-    	} catch (ClientProtocolException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return "error";
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return "error";
+			return response.getString("result");
 		} catch (JSONException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 			return "error";
 		}
-		
-	}
 	
-	private JSONObject apiAccess(String authKey, JSONObject params)
-	{
-		JSONObject jsonEntity = null;
-		try {
-			jsonObject.put("jsonrpc", "2.0");
-			jsonObject.put("params", params);
-			jsonObject.put("auth", authKey);
-			jsonObject.put("id", "1");
-			StringEntity stringEntity = new StringEntity(jsonObject.toString());
-			httpPost.setEntity(stringEntity);
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-			Log.e("test",authKey);
-			if(authKey == "error") {
-				return jsonEntity;
-			}
-			Log.e("Req",EntityUtils.toString(httpPost.getEntity()));
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-	//		Log.e("httpRes",Integer.toString(httpResponse.getStatusLine().getStatusCode()));
-			int statusCode = httpResponse.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK)
-			{
-				String entity = EntityUtils.toString(httpResponse.getEntity());
-				Log.e("Response", entity);
-				jsonEntity = new JSONObject(entity);
-				return jsonEntity;
-				
-			}else
-			{
-				return jsonEntity;
-			}
-		} catch (JSONException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return jsonEntity;
-		} catch (UnsupportedEncodingException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return jsonEntity;
-		} catch (ClientProtocolException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return jsonEntity;
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return jsonEntity;
-		}
-		
 	}
-	public ArrayList<Host> getHostList(String authKey, String filter)
+
+	public ArrayList<Host> getHostList(String filter)
 	{
 		ArrayList<Host> hostList = new ArrayList<Host>();
 		ArrayList<Trigger> trigger = new ArrayList<Trigger>();
@@ -232,14 +311,18 @@ public class ZabbixApiAccess {
 		
 		
 		try {
-			this.jsonObject.put("method", "host.get");
+				//	this.jsonObject.put("method", "host.get");
 			subParams.put("extendoutput", "true");
 			if ( filter != "all" )
 			{
 				subsubParams.put("host", "[\""+filter+"\"]");
 				subParams.put("filter", subsubParams);
 			}
-			response = this.apiAccess(authKey, subParams);
+		
+			this.setMethod("host.get");
+			this.jsonObject.put("params", subParams);
+			response = this.httpAccess();
+	//		response = this.apiAccess(authKey, subParams);
 			if (response != null) {
 				JSONArray resultObject = response.getJSONArray("result");
 			
@@ -256,7 +339,7 @@ public class ZabbixApiAccess {
 					//hostList.add(resultObject.getJSONObject(i).getString("host"));
 					Log.e("hostID",host.getHostId());
 					Log.e("hostName",host.getHostName());
-					trigger = this.getTriggerList(authKey, host.getHostId(), 0);
+					trigger = this.getTriggerList(host.getHostId(), 0);
 					int errornum = 0;
 					if (trigger != null) {
 						errornum = trigger.size();
@@ -276,7 +359,7 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	public ArrayList<Item> getItemList(String authKey, String hostid, ArrayList<String> itemIdList, int num) {
+	public ArrayList<Item> getItemList(String hostid, ArrayList<String> itemIdList, int num) {
 		
 		
 		
@@ -285,7 +368,7 @@ public class ZabbixApiAccess {
 		JSONObject response = null;
 		
 		try {
-			this.jsonObject.put("method", "item.get");
+		//	this.jsonObject.put("method", "item.get");
 			subParams.put("output","extend");
 			JSONArray idarray = new JSONArray();
 			//Log.e("itemid",itemIdList.get(0));
@@ -303,8 +386,10 @@ public class ZabbixApiAccess {
 			//subsubParams.put("hostid",hostid);
 			subParams.put("filter", subsubParams);
 			//subParams.put("limit", num);
-			
-			response = this.apiAccess(authKey, subParams);
+			this.setMethod("item.get");
+			this.jsonObject.put("params", subParams);
+			response = this.httpsAccess();
+			//response = this.apiAccess(authKey, subParams);
 			
 			if(response != null) {
 				JSONArray resultObject = response.getJSONArray("result");
@@ -335,19 +420,22 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	public ArrayList<String> getItemIdList(String authKey, String hostid) {
+	public ArrayList<String> getItemIdList(String hostid) {
 		
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
 		JSONObject response = null;
 		
 		try {
-			this.jsonObject.put("method", "item.get");
+		//	this.jsonObject.put("method", "item.get");
 			subParams.put("output","shorten");
 			subsubParams.put("hostid",hostid);
 			subParams.put("filter", subsubParams);
 			
-			response = this.apiAccess(authKey, subParams);
+			this.setMethod("item.get");
+			this.jsonObject.put("params", subParams);
+			response = this.httpAccess();
+		//	response = this.apiAccess(authKey, subParams);
 			
 			if(response != null) {
 				JSONArray resultObject = response.getJSONArray("result");
@@ -375,7 +463,7 @@ public class ZabbixApiAccess {
 		itemList.clear();
 	}
 	
-	public ArrayList<HistoryData> getHistoryData(String authKey, Item item, TimeRange timerange ) {
+	public ArrayList<HistoryData> getHistoryData(Item item, TimeRange timerange ) {
 
 		ArrayList<HistoryData> historyDataList = new ArrayList<HistoryData>();
 		
@@ -384,13 +472,16 @@ public class ZabbixApiAccess {
 		JSONObject response = null;
 		
 		try {
-			this.jsonObject.put("method", "history.get");
+			//this.jsonObject.put("method", "history.get");
 			subParams.put("output","extend");
 			subParams.put("itemids", item.getItemId());
 			subParams.put("time_from", timerange.getTimeFrom());
 			subParams.put("time_till", timerange.getTimeTill());
 			subParams.put("history", item.getItemValueType());
-			response = this.apiAccess(authKey, subParams);
+			this.setMethod("history.get");
+			this.jsonObject.put("params",subParams);
+			response = this.httpAccess();
+			//response = this.apiAccess(authKey, subParams);
 			
 			if(response != null) {
 				JSONArray resultObject = response.getJSONArray("result");
@@ -420,7 +511,7 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	public ArrayList<Trigger> getTriggerList(String authKey, String hostId, int limit) {
+	public ArrayList<Trigger> getTriggerList(String hostId, int limit) {
 
 		ArrayList<Trigger> triggerList = new ArrayList<Trigger>();
 		
@@ -431,7 +522,7 @@ public class ZabbixApiAccess {
 		try {
 			JSONArray idarray = new JSONArray();
 			idarray.put(hostId);
-			this.jsonObject.put("method", "trigger.get");
+		//	this.jsonObject.put("method", "trigger.get");
 			subParams.put("output","extend");
 			subParams.put("hostids", idarray);
 			subParams.put("sortfield", "lastchange");
@@ -443,7 +534,9 @@ public class ZabbixApiAccess {
 			subsubParams.put("value", 1);
 			subsubParams.put("status", 0);
 			subParams.put("filter", subsubParams);
-			response = this.apiAccess(authKey, subParams);
+			this.setMethod("trigger.get");
+			this.jsonObject.put("params", subParams);
+			response = this.httpAccess();
 			
 			if(response != null) {
 				JSONArray resultObject = response.getJSONArray("result");

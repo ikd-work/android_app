@@ -1,6 +1,8 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.util.ArrayList;
+
+import com.zabiroid.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -53,12 +55,11 @@ public class HostDetailActivity extends Activity{
         authToken = authData.getString("AuthToken", "No Data");
         String uri = authData.getString("URI", "No Data");
         
-        zabbix = new ZabbixApiAccess();
-		zabbix.setHttpPost(uri);
-		itemIdList = zabbix.getItemIdList(authToken, hostID);
+        zabbix = new ZabbixApiAccess(uri,authToken);
+		itemIdList = zabbix.getItemIdList(hostID);
 		
 		if ( itemIdList.size() != 0) {
-			itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+			itemList = zabbix.getItemList(hostID, itemIdList, 20);
 		}
 		
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
@@ -144,7 +145,7 @@ public class HostDetailActivity extends Activity{
     	}
     	@Override
 		protected String doInBackground(Void... arg0) {
-    		itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+    		itemList = zabbix.getItemList(hostID, itemIdList, 20);
 			return null;
 		}
     	@Override
@@ -176,10 +177,10 @@ public class HostDetailActivity extends Activity{
     		//startActivity(intent);
     		
     		zabbix.clearItemListCount();
-    		itemIdList = zabbix.getItemIdList(authToken, hostID);
+    		itemIdList = zabbix.getItemIdList(hostID);
     		
     		if ( itemIdList.size() != 0) {
-    			itemList = zabbix.getItemList(authToken, hostID, itemIdList, 20);
+    			itemList = zabbix.getItemList(hostID, itemIdList, 20);
     		}
     		adapter = new ItemListAdapter(this, itemList);
     		list.setAdapter(adapter);
@@ -190,6 +191,4 @@ public class HostDetailActivity extends Activity{
     	return super.onOptionsItemSelected(item);
     }
     
-    
-
 }

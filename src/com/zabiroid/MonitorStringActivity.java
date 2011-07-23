@@ -1,7 +1,9 @@
-package com.zabbix;
+package com.zabiroid;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import com.zabiroid.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,7 +25,6 @@ public class MonitorStringActivity extends Activity {
         Intent intent = getIntent();
         Item item = (Item)intent.getSerializableExtra("item");
         
-        //String itemID = intent.getStringExtra("itemid");
         String itemdescription = intent.getStringExtra("itemdescription");
         String hostName = intent.getStringExtra("hostName");
         
@@ -36,9 +37,8 @@ public class MonitorStringActivity extends Activity {
         timerange.setTranslateDateToTimeTill(now);
         timerange.setTimeFromBeforeHour(1);
         
-        ZabbixApiAccess zabbix = new ZabbixApiAccess();
-		zabbix.setHttpPost(uri);
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange); 
+        ZabbixApiAccess zabbix = new ZabbixApiAccess(uri,authToken);
+		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(item, timerange); 
      
 		ListView list = (ListView)findViewById(R.id.historylistview);
 		HistoryDataListAdapter adapter = new HistoryDataListAdapter(this,historyDataList);
