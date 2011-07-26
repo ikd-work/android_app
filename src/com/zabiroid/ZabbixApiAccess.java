@@ -19,6 +19,7 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -27,7 +28,9 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -51,9 +54,14 @@ public class ZabbixApiAccess {
 	private int position = 0;
 	private String authToken;
 	
-	ZabbixApiAccess(String host){
+	ZabbixApiAccess(String host, boolean https){
 		this.host = host;
-		this.uri = makeUri(host);
+		if ( https == true ) {
+			this.uri = this.makeHttpsUri(host);
+		}else {
+			this.uri = this.makeUri(host);
+		}
+		
 		this.setBasicJSONParams();
 	}
 	
@@ -93,7 +101,7 @@ public class ZabbixApiAccess {
 	private String makeUri(String host)
 	{
 		Uri.Builder uriBuilder = new Uri.Builder();
-    	uriBuilder.scheme("http");
+    	uriBuilder.scheme("https");
     	uriBuilder.authority(host);
     	uriBuilder.path(ZABBIX_API_PATH);
     	this.uri = Uri.decode(uriBuilder.build().toString());
@@ -148,7 +156,7 @@ public class ZabbixApiAccess {
 	}
  	
 	private JSONObject httpAccess() {
-		httpPost = new HttpPost(uri);
+		httpPost = new HttpPost(this.uri);
 		JSONObject jsonEntity = null;
 		httpPost.setHeader("Content-type", CONTENT_TYPE);
 		StringEntity stringEntity = null;
@@ -192,7 +200,7 @@ public class ZabbixApiAccess {
 	}
 	
 	private JSONObject httpsAccess() {
-		httpPost = new HttpPost(this.makeHttpsUri(this.host));
+		httpPost = new HttpPost(this.uri);
 		JSONObject jsonEntity = null;
 		httpPost.setHeader("Content-type", CONTENT_TYPE);
 		StringEntity stringEntity = null;
@@ -233,22 +241,32 @@ public class ZabbixApiAccess {
 		} catch (KeyManagementException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+		//	Log.e("KeyManagement","KeyManagement");
 		} catch (NoSuchAlgorithmException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+		//	Log.e("NoSuchAlgorithm","NoSuchAlgorithm");
 		} catch (KeyStoreException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+		//	Log.e("KeyStore","KeyStore");
 		} catch (UnrecoverableKeyException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+		//	Log.e("UnrecoverableKey","UnrecoverableKey");
 		}
 		 Scheme https = new Scheme("https", sf, 443);
+		// Log.e("Scheme",https.getSocketFactory().toString());
+		// Log.e("connectionManager1",httpclient.getConnectionManager().toString());
 	     httpclient.getConnectionManager().getSchemeRegistry().register(https);
+	    // Log.e("connectionManager2",httpclient.getConnectionManager().getSchemeRegistry().toString());
+	     httpcontext.setAttribute(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+	     httpcontext.setAttribute(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+	     httpcontext.setAttribute(CoreProtocolPNames.HTTP_CONTENT_CHARSET, HTTP.UTF_8);
 		 try {
 			 Log.e("httpPost",httpPost.getURI().toString());
-			HttpResponse httpResponse = httpclient.execute(httpPost);
-			Log.e("httpREsponse",httpResponse.toString());
+			HttpResponse httpResponse = httpclient.execute(httpPost,httpcontext);
+		//	Log.e("httpREsponse",httpResponse.toString());
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK)
 			{
@@ -269,10 +287,13 @@ public class ZabbixApiAccess {
 		} catch (ClientProtocolException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			Log.e("ClientProtocol","ClientProtocol");
 			return null;
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			Log.e("IO","IO");
+			Log.e("IOERROR",e.getMessage());
 			return null;
 		}
 		 
@@ -289,7 +310,7 @@ public class ZabbixApiAccess {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
-		JSONObject response = this.httpAccess();
+		JSONObject response = this.httpsAccess();
 		try {
 			return response.getString("result");
 		} catch (JSONException e) {
@@ -321,7 +342,7 @@ public class ZabbixApiAccess {
 		
 			this.setMethod("host.get");
 			this.jsonObject.put("params", subParams);
-			response = this.httpAccess();
+			response = this.httpsAccess();
 	//		response = this.apiAccess(authKey, subParams);
 			if (response != null) {
 				JSONArray resultObject = response.getJSONArray("result");
@@ -536,7 +557,7 @@ public class ZabbixApiAccess {
 			subParams.put("filter", subsubParams);
 			this.setMethod("trigger.get");
 			this.jsonObject.put("params", subParams);
-			response = this.httpAccess();
+			response = this.httpsAccess();
 			
 			if(response != null) {
 				JSONArray resultObject = response.getJSONArray("result");

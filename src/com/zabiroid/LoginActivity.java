@@ -87,7 +87,10 @@ public class LoginActivity extends Activity {
         		CharSequence host = hostText.getText();
         		CharSequence account_name = editText.getText();
         		CharSequence pass = passText.getText();
-        		ZabbixApiAccess zabbix = new ZabbixApiAccess(host.toString());
+        		CheckBox checkBox = (CheckBox)findViewById(R.id.https_check);
+        		Boolean https = checkBox.isChecked();
+        		Log.e("https_check",https.toString());
+        		ZabbixApiAccess zabbix = new ZabbixApiAccess(host.toString(),https);
         		//zabbix.setHost(host.toString());
         		//String uri = zabbix.makeUri(host.toString());
         		//zabbix.setHttpPost(uri);

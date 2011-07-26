@@ -17,6 +17,8 @@ import javax.net.ssl.X509TrustManager;
  
 import org.apache.http.conn.ssl.SSLSocketFactory;
 
+import android.util.Log;
+
 public class MySSLSocketFactory extends SSLSocketFactory{
     SSLContext sslContext = SSLContext.getInstance("TLS");
     
@@ -29,14 +31,18 @@ public class MySSLSocketFactory extends SSLSocketFactory{
         TrustManager tm = new X509TrustManager() {
             public void checkClientTrusted(X509Certificate[] chain,
                     String authType) throws CertificateException {
+            	Log.e("checkClientTrusted","checkClientTrusted");
             }
  
             public void checkServerTrusted(X509Certificate[] chain,
                     String authType) throws CertificateException {
+            	Log.e("checkServerTrusted","checkServerTrusted");
             }
  
             public X509Certificate[] getAcceptedIssuers() {
-                return null;
+            	Log.e("X509Certificate","X509Certificate");
+            	return null;
+                
             }
         };
         sslContext.init(null, new TrustManager[] { tm }, null);
@@ -46,12 +52,15 @@ public class MySSLSocketFactory extends SSLSocketFactory{
     public Socket createSocket(Socket socket, String host, int port,
             boolean autoClose) throws IOException, UnknownHostException {
         // カスタムSSLContext経由で生成したSSLソケットを返す。
+    	Log.e("createSocket1","createSocket1");
         return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
     }
  
     @Override
     public Socket createSocket() throws IOException {
         // カスタムSSLContext経由で生成したSSLソケットを返す。
+    	Log.e("createSocket2","createSocket2");
+    	//Log.e("Socket",sslContext.getSocketFactory().createSocket().toString());
         return sslContext.getSocketFactory().createSocket();
     }
 	
