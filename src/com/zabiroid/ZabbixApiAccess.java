@@ -154,19 +154,28 @@ public class ZabbixApiAccess {
 			return "error";
 		}
 	}
- 	
-	private JSONObject httpAccess() {
+	
+	private JSONObject Access() {
 		httpPost = new HttpPost(this.uri);
-		JSONObject jsonEntity = null;
 		httpPost.setHeader("Content-type", CONTENT_TYPE);
 		StringEntity stringEntity = null;
 		try {
-			stringEntity = new StringEntity(jsonObject.toString());
+			stringEntity = new StringEntity(this.jsonObject.toString());
 		} catch (UnsupportedEncodingException e1) {
 			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		}
 		httpPost.setEntity(stringEntity);
+		
+		if ( this.uri.substring(0,5).matches("https") ) {
+			return this.httpsAccess();
+		}else {
+			return this.httpAccess();
+		}
+	}
+ 	
+	private JSONObject httpAccess() {
+		JSONObject jsonEntity = null;
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		try {
 			HttpResponse httpResponse = httpClient.execute(httpPost);
@@ -200,23 +209,11 @@ public class ZabbixApiAccess {
 	}
 	
 	private JSONObject httpsAccess() {
-		httpPost = new HttpPost(this.uri);
 		JSONObject jsonEntity = null;
-		httpPost.setHeader("Content-type", CONTENT_TYPE);
-		StringEntity stringEntity = null;
-		try {
-			stringEntity = new StringEntity(jsonObject.toString());
-		} catch (UnsupportedEncodingException e1) {
-			// TODO 自動生成された catch ブロック
-			e1.printStackTrace();
-		}
-		httpPost.setEntity(stringEntity);
-		
-		
-		 HttpClient httpclient = new DefaultHttpClient();
-		 HttpContext httpcontext = new BasicHttpContext();
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpContext httpcontext = new BasicHttpContext();
 		 
-		 KeyStore trustStore = null;
+		KeyStore trustStore = null;
 		try {
 			trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 		} catch (KeyStoreException e) {
@@ -310,7 +307,7 @@ public class ZabbixApiAccess {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
-		JSONObject response = this.httpsAccess();
+		JSONObject response = this.Access();
 		try {
 			return response.getString("result");
 		} catch (JSONException e) {
@@ -342,7 +339,7 @@ public class ZabbixApiAccess {
 		
 			this.setMethod("host.get");
 			this.jsonObject.put("params", subParams);
-			response = this.httpsAccess();
+			response = this.Access();
 	//		response = this.apiAccess(authKey, subParams);
 			if (response != null) {
 				JSONArray resultObject = response.getJSONArray("result");
@@ -409,7 +406,7 @@ public class ZabbixApiAccess {
 			//subParams.put("limit", num);
 			this.setMethod("item.get");
 			this.jsonObject.put("params", subParams);
-			response = this.httpsAccess();
+			response = this.Access();
 			//response = this.apiAccess(authKey, subParams);
 			
 			if(response != null) {
@@ -455,7 +452,7 @@ public class ZabbixApiAccess {
 			
 			this.setMethod("item.get");
 			this.jsonObject.put("params", subParams);
-			response = this.httpAccess();
+			response = this.Access();
 		//	response = this.apiAccess(authKey, subParams);
 			
 			if(response != null) {
@@ -501,7 +498,7 @@ public class ZabbixApiAccess {
 			subParams.put("history", item.getItemValueType());
 			this.setMethod("history.get");
 			this.jsonObject.put("params",subParams);
-			response = this.httpAccess();
+			response = this.Access();
 			//response = this.apiAccess(authKey, subParams);
 			
 			if(response != null) {
@@ -557,7 +554,7 @@ public class ZabbixApiAccess {
 			subParams.put("filter", subsubParams);
 			this.setMethod("trigger.get");
 			this.jsonObject.put("params", subParams);
-			response = this.httpsAccess();
+			response = this.Access();
 			
 			if(response != null) {
 				JSONArray resultObject = response.getJSONArray("result");
