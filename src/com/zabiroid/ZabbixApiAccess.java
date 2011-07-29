@@ -29,6 +29,8 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
@@ -53,6 +55,8 @@ public class ZabbixApiAccess {
 	private ArrayList<String> itemIdList = new ArrayList<String>();
 	private int position = 0;
 	private String authToken;
+	JSONObject jsonEntity = null;
+	HttpClient httpClient = new DefaultHttpClient();
 	
 	ZabbixApiAccess(String host, boolean https){
 		this.host = host;
@@ -101,7 +105,7 @@ public class ZabbixApiAccess {
 	private String makeUri(String host)
 	{
 		Uri.Builder uriBuilder = new Uri.Builder();
-    	uriBuilder.scheme("https");
+    	uriBuilder.scheme("http");
     	uriBuilder.authority(host);
     	uriBuilder.path(ZABBIX_API_PATH);
     	this.uri = Uri.decode(uriBuilder.build().toString());
@@ -158,6 +162,8 @@ public class ZabbixApiAccess {
 	private JSONObject Access() {
 		httpPost = new HttpPost(this.uri);
 		httpPost.setHeader("Content-type", CONTENT_TYPE);
+		HttpParams params = httpClient.getParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
 		StringEntity stringEntity = null;
 		try {
 			stringEntity = new StringEntity(this.jsonObject.toString());
@@ -175,11 +181,11 @@ public class ZabbixApiAccess {
 	}
  	
 	private JSONObject httpAccess() {
-		JSONObject jsonEntity = null;
-		DefaultHttpClient httpClient = new DefaultHttpClient();
 		try {
 			HttpResponse httpResponse = httpClient.execute(httpPost);
+			Log.e("response",httpResponse.toString());
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
+			Log.e("Statuscode",Integer.toString(statusCode));
 			if (statusCode == HttpStatus.SC_OK)
 			{
 				String entity = EntityUtils.toString(httpResponse.getEntity());
@@ -209,7 +215,7 @@ public class ZabbixApiAccess {
 	}
 	
 	private JSONObject httpsAccess() {
-		JSONObject jsonEntity = null;
+	//	JSONObject jsonEntity = null;
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpContext httpcontext = new BasicHttpContext();
 		 
@@ -263,7 +269,6 @@ public class ZabbixApiAccess {
 		 try {
 			 Log.e("httpPost",httpPost.getURI().toString());
 			HttpResponse httpResponse = httpclient.execute(httpPost,httpcontext);
-		//	Log.e("httpREsponse",httpResponse.toString());
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK)
 			{
@@ -312,6 +317,9 @@ public class ZabbixApiAccess {
 			return response.getString("result");
 		} catch (JSONException e) {
 			// TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩ catch ÉuÉçÉbÉN
+			e.printStackTrace();
+			return "error";
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}

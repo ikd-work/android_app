@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -63,6 +64,10 @@ public class HostListActivity extends Activity {
 					startActivity(intent);
 				}
 			});
+		} else {
+			TextView nodata_view = new TextView(this);
+			nodata_view.setText("“o˜^ƒzƒXƒg‚Í‚ ‚è‚Ü‚¹‚ñ");
+			setContentView(nodata_view,new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		}
     }
     
