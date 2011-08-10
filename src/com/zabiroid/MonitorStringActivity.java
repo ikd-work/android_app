@@ -1,5 +1,6 @@
 package com.zabiroid;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MonitorStringActivity extends Activity {
 	private static final String PREFERENCE_KEY = "AuthData";
@@ -38,7 +40,14 @@ public class MonitorStringActivity extends Activity {
         timerange.setTimeFromBeforeHour(1);
         
         ZabbixApiAccess zabbix = new ZabbixApiAccess(uri,authToken);
-		ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(item, timerange); 
+		ArrayList<HistoryData> historyDataList = null;
+		try {
+			historyDataList = zabbix.getHistoryData(item, timerange);
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			Toast.makeText(this,"接続エラー",Toast.LENGTH_LONG).show();
+		} 
      
 		ListView list = (ListView)findViewById(R.id.historylistview);
 		HistoryDataListAdapter adapter = new HistoryDataListAdapter(this,historyDataList);

@@ -374,7 +374,14 @@ public class MonitorActivity extends Activity {
 			//lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
 			//lineview.invalidate();
 			
-			ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(item, timerange);
+			ArrayList<HistoryData> historyDataList = null;
+			try {
+				historyDataList = zabbix.getHistoryData(item, timerange);
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+				Toast.makeText(MonitorActivity.this,"接続エラー",Toast.LENGTH_LONG).show();
+			}
 			Log.d("backgournd","back");
 			TimeSeries series = new TimeSeries(itemdescription, Second.class);
 			Log.d("backgournd","back2");

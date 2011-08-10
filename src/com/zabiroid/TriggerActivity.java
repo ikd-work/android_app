@@ -1,5 +1,6 @@
 package com.zabiroid;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.zabiroid.R;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class TriggerActivity extends Activity {
 	
@@ -43,7 +45,14 @@ public class TriggerActivity extends Activity {
         
         
 		zabbix = new ZabbixApiAccess(uri,authToken);
-		ArrayList<Trigger> eventList = zabbix.getTriggerList(hostId, 20);
+		ArrayList<Trigger> eventList = null;
+		try {
+			eventList = zabbix.getTriggerList(hostId, 20);
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			Toast.makeText(this,"接続エラー",Toast.LENGTH_LONG).show();
+		}
 		
 		if( eventList != null) {
 			adapter = new TriggerListAdapter(this, eventList);		    

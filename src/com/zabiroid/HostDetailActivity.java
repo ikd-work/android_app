@@ -1,5 +1,6 @@
 package com.zabiroid;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.zabiroid.R;
@@ -19,6 +20,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HostDetailActivity extends Activity{
 	private static final String PREFERENCE_KEY = "AuthData";
@@ -56,10 +58,22 @@ public class HostDetailActivity extends Activity{
         String uri = authData.getString("URI", "No Data");
         
         zabbix = new ZabbixApiAccess(uri,authToken);
-		itemIdList = zabbix.getItemIdList(hostID);
+		try {
+			itemIdList = zabbix.getItemIdList(hostID);
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			Toast.makeText(HostDetailActivity.this,"接続エラー",Toast.LENGTH_LONG).show();
+		}
 		
 		if ( itemIdList.size() != 0) {
-			itemList = zabbix.getItemList(hostID, itemIdList, 20);
+			try {
+				itemList = zabbix.getItemList(hostID, itemIdList, 20);
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+				Toast.makeText(this,"接続エラー",Toast.LENGTH_LONG).show();
+			}
 		}
 		
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
@@ -145,7 +159,13 @@ public class HostDetailActivity extends Activity{
     	}
     	@Override
 		protected String doInBackground(Void... arg0) {
-    		itemList = zabbix.getItemList(hostID, itemIdList, 20);
+    		try {
+				itemList = zabbix.getItemList(hostID, itemIdList, 20);
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+				Toast.makeText(HostDetailActivity.this,"接続エラー",Toast.LENGTH_LONG).show();
+			}
 			return null;
 		}
     	@Override
@@ -177,10 +197,22 @@ public class HostDetailActivity extends Activity{
     		//startActivity(intent);
     		
     		zabbix.clearItemListCount();
-    		itemIdList = zabbix.getItemIdList(hostID);
+    		try {
+				itemIdList = zabbix.getItemIdList(hostID);
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+				Toast.makeText(this,"接続エラー",Toast.LENGTH_LONG).show();
+			}
     		
     		if ( itemIdList.size() != 0) {
-    			itemList = zabbix.getItemList(hostID, itemIdList, 20);
+    			try {
+					itemList = zabbix.getItemList(hostID, itemIdList, 20);
+				} catch (IOException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+					Toast.makeText(this,"接続エラー",Toast.LENGTH_LONG).show();
+				}
     		}
     		adapter = new ItemListAdapter(this, itemList);
     		list.setAdapter(adapter);

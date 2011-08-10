@@ -90,7 +90,14 @@ public class LoginActivity extends Activity {
         		CheckBox checkBox = (CheckBox)findViewById(R.id.https_check);
         		Boolean https = checkBox.isChecked();
         		ZabbixApiAccess zabbix = new ZabbixApiAccess(host.toString(),https);
-        		String auth_key = zabbix.zabbixAuthenticate(account_name.toString(), pass.toString());
+        		String auth_key = null;
+				try {
+					auth_key = zabbix.zabbixAuthenticate(account_name.toString(), pass.toString());
+				} catch (IOException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+					Toast.makeText(LoginActivity.this,"接続エラー",Toast.LENGTH_LONG).show();
+				}
         		
         		authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
         		authData.edit().putString("AuthToken", auth_key).commit();

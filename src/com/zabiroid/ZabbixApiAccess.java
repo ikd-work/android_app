@@ -159,7 +159,7 @@ public class ZabbixApiAccess {
 		}
 	}
 	
-	private JSONObject Access() {
+	private JSONObject Access() throws IOException {
 		httpPost = new HttpPost(this.uri);
 		httpPost.setHeader("Content-type", CONTENT_TYPE);
 		HttpParams params = httpClient.getParams();
@@ -180,7 +180,7 @@ public class ZabbixApiAccess {
 		}
 	}
  	
-	private JSONObject httpAccess() {
+	private JSONObject httpAccess() throws IOException {
 		try {
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			Log.e("response",httpResponse.toString());
@@ -206,15 +206,12 @@ public class ZabbixApiAccess {
 		} catch (ClientProtocolException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
-			return null;
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
+			Log.e("ClientProtocol",e.getMessage());
 			return null;
 		}	
 	}
 	
-	private JSONObject httpsAccess() {
+	private JSONObject httpsAccess() throws IOException {
 	//	JSONObject jsonEntity = null;
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpContext httpcontext = new BasicHttpContext();
@@ -291,17 +288,11 @@ public class ZabbixApiAccess {
 			e.printStackTrace();
 			Log.e("ClientProtocol","ClientProtocol");
 			return null;
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			Log.e("IO","IO");
-			Log.e("IOERROR",e.getMessage());
-			return null;
 		}
 		 
 	}
 	
-	public String zabbixAuthenticate(String account_name, String pass) {
+	public String zabbixAuthenticate(String account_name, String pass) throws IOException {
 		this.setMethod("user.authenticate");
 		JSONObject params = new JSONObject();
 		try {
@@ -326,7 +317,7 @@ public class ZabbixApiAccess {
 	
 	}
 
-	public ArrayList<Host> getHostList(String filter)
+	public ArrayList<Host> getHostList(String filter) throws IOException
 	{
 		ArrayList<Host> hostList = new ArrayList<Host>();
 		ArrayList<Trigger> trigger = new ArrayList<Trigger>();
@@ -385,7 +376,7 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	public ArrayList<Item> getItemList(String hostid, ArrayList<String> itemIdList, int num) {
+	public ArrayList<Item> getItemList(String hostid, ArrayList<String> itemIdList, int num) throws IOException {
 		
 		
 		
@@ -446,7 +437,7 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	public ArrayList<String> getItemIdList(String hostid) {
+	public ArrayList<String> getItemIdList(String hostid) throws IOException {
 		
 		JSONObject subParams = new JSONObject();
 		JSONObject subsubParams = new JSONObject();
@@ -489,7 +480,7 @@ public class ZabbixApiAccess {
 		itemList.clear();
 	}
 	
-	public ArrayList<HistoryData> getHistoryData(Item item, TimeRange timerange ) {
+	public ArrayList<HistoryData> getHistoryData(Item item, TimeRange timerange ) throws IOException {
 
 		ArrayList<HistoryData> historyDataList = new ArrayList<HistoryData>();
 		
@@ -537,7 +528,7 @@ public class ZabbixApiAccess {
 		
 	}
 	
-	public ArrayList<Trigger> getTriggerList(String hostId, int limit) {
+	public ArrayList<Trigger> getTriggerList(String hostId, int limit) throws IOException {
 
 		ArrayList<Trigger> triggerList = new ArrayList<Trigger>();
 		
