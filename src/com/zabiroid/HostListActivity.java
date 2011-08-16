@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,13 +44,12 @@ public class HostListActivity extends Activity {
         authData = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
         authToken = authData.getString("AuthToken", "No Data");
         uri = authData.getString("URI", "No Data");
-    
+        list= (ListView)findViewById(R.id.hostlistview);
 		zabbix = new ZabbixApiAccess(uri,authToken);
 		try {
 			hostList = zabbix.getHostList("all");
 			if( hostList != null) {
 				adapter = new HostListAdapter(this, hostList);		    
-				list= (ListView)findViewById(R.id.hostlistview);
 			    
 				list.setAdapter(adapter);
 			
@@ -68,17 +68,17 @@ public class HostListActivity extends Activity {
 				});
 			} else {
 				TextView nodata_view = new TextView(this);
-				nodata_view.setText("“o˜^ƒzƒXƒg‚Í‚ ‚è‚Ü‚¹‚ñ");
+				nodata_view.setText("No Host!");
 				setContentView(nodata_view,new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 			}
 		
 		} catch (IOException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
-			Toast.makeText(HostListActivity.this,"Ú‘±ƒGƒ‰[",Toast.LENGTH_LONG).show();
-			TextView error_view = new TextView(this);
-			error_view.setText("ƒzƒXƒgƒŠƒXƒg‚Ìæ“¾‚É¸”s‚µ‚Ü‚µ‚½");
-			setContentView(error_view,new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
+			Toast.makeText(HostListActivity.this,"ï¿½Ú‘ï¿½ï¿½Gï¿½ï¿½ï¿½[",Toast.LENGTH_LONG).show();
+			TextView error_view = (TextView)findViewById(R.id.message);
+			error_view.setText("Connection Error!");
+			//setContentView(error_view,new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		}
 		
 		
@@ -105,16 +105,36 @@ public class HostListActivity extends Activity {
     	}else if( item.getItemId() == 2) {
     		try {
 				hostList = zabbix.getHostList("all");
+				if( hostList != null && hostList.size() != 0 ){
+					adapter = new HostListAdapter(this, hostList);
+		        	list.setAdapter(adapter);
+		        	list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+						public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+							ListView list = (ListView) parent;
+							Host host = (Host) list.getItemAtPosition(position);
+							Intent intent = new Intent(HostListActivity.this,HostDetailActivity.class);
+							intent.putExtra("hostid", host.getHostId());
+							intent.putExtra("hostname", host.getHostName());
+							intent.putExtra("hoststatus", host.getHostStatus());
+							intent.putExtra("hostdns", host.getHostDns());
+							intent.putExtra("hostip", host.getHostIp());
+							startActivity(intent);
+						}
+					});
+		        	TextView error_view = (TextView)findViewById(R.id.message);
+					error_view.setText("");
+				}else{
+					TextView error_view = (TextView)findViewById(R.id.message);
+					error_view.setText("Connection Error!");
+				}
 			} catch (IOException e) {
-				// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+				// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 				e.printStackTrace();
-				Toast.makeText(HostListActivity.this,"Ú‘±ƒGƒ‰[",Toast.LENGTH_LONG).show();
-				TextView error_view = new TextView(this);
-				error_view.setText("ƒzƒXƒgƒŠƒXƒg‚Ìæ“¾‚É¸”s‚µ‚Ü‚µ‚½");
-				setContentView(error_view,new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
-			}
-    		adapter = new HostListAdapter(this, hostList);
-    		list.setAdapter(adapter);
+				Toast.makeText(HostListActivity.this,"ï¿½Ú‘ï¿½ï¿½Gï¿½ï¿½ï¿½[",Toast.LENGTH_LONG).show();
+				TextView error_view = (TextView)findViewById(R.id.message);
+				error_view.setText("Connection Error!");
+			}        	
+    		
     	}else if( item.getItemId() == 3) {
     		finish();
     	}

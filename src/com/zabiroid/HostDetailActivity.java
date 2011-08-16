@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -57,25 +58,8 @@ public class HostDetailActivity extends Activity{
         authToken = authData.getString("AuthToken", "No Data");
         String uri = authData.getString("URI", "No Data");
         
-        zabbix = new ZabbixApiAccess(uri,authToken);
-		try {
-			itemIdList = zabbix.getItemIdList(hostID);
-		} catch (IOException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
-			e.printStackTrace();
-			Toast.makeText(HostDetailActivity.this,"Ú‘±ƒGƒ‰[",Toast.LENGTH_LONG).show();
-		}
-		
-		if ( itemIdList.size() != 0) {
-			try {
-				itemList = zabbix.getItemList(hostID, itemIdList, 20);
-			} catch (IOException e) {
-				// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
-				e.printStackTrace();
-				Toast.makeText(this,"Ú‘±ƒGƒ‰[",Toast.LENGTH_LONG).show();
-			}
-		}
-		
+        list = (ListView)findViewById(R.id.itemlistview);
+        Log.e("list",list.toString());
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
         TextView textViewHostName = (TextView)this.findViewById(R.id.host_detail_name);
         TextView textViewHostStatus = (TextView)this.findViewById(R.id.host_detail_status);
@@ -85,62 +69,77 @@ public class HostDetailActivity extends Activity{
         textViewHostName.setText(hostName);
         
         if (hostStatus.equals("1")) {
-        	textViewHostStatus.setText("–³Œø");
+        	textViewHostStatus.setText("ï¿½ï¿½ï¿½ï¿½");
         	textViewHostStatus.setTextColor(Color.RED);
         	TextView textViewTitle = (TextView)this.findViewById(R.id.host_detail_status_title);
         	textViewTitle.setTextColor(Color.RED);
         }
         else {
-        	textViewHostStatus.setText("—LŒø");
+        	textViewHostStatus.setText("ï¿½Lï¿½ï¿½");
         }
         
         textViewHostDns.setText(hostDns);
-        textViewHostIp.setText(hostIp);
+        textViewHostIp.setText(hostIp);    
         
-      
-		if( itemList != null && itemIdList.size() != 0) {
-			adapter = new ItemListAdapter(this, itemList);		    
-			list= (ListView)findViewById(R.id.itemlistview);
-		    list.addFooterView(getFooter());
-			list.setAdapter(adapter);
-			list.setOnScrollListener(new OnScrollListener() {
-				public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
-					if(totalItemCount == firstVisibleItem + visibleItemCount) {
-					
-						if( totalItemCount < itemIdList.size()) {
-							if (mTask == null || mTask.getStatus() != AsyncTask.Status.RUNNING) {
-								mTask = new AsyncItemGetTask().execute();
+        zabbix = new ZabbixApiAccess(uri,authToken);
+		try {
+			itemIdList = zabbix.getItemIdList(hostID);
+			if ( itemIdList != null && itemIdList.size() != 0) {
+				itemList = zabbix.getItemList(hostID, itemIdList, 20);
+			}
+	        if( itemList != null && itemIdList.size() != 0) {
+				adapter = new ItemListAdapter(this, itemList);		    
+			    list.addFooterView(getFooter());
+				list.setAdapter(adapter);
+				list.setOnScrollListener(new OnScrollListener() {
+					public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+						if(totalItemCount == firstVisibleItem + visibleItemCount) {
+						
+							if( totalItemCount < itemIdList.size()) {
+								if (mTask == null || mTask.getStatus() != AsyncTask.Status.RUNNING) {
+									mTask = new AsyncItemGetTask().execute();
+								}
 							}
-						}
-						else {
-							list.removeFooterView(getFooter());
+							else {
+								list.removeFooterView(getFooter());
+							}
+							
 						}
 						
 					}
-					
-				}
-				public void onScrollStateChanged(AbsListView view, int arg1){
-					
-				}
-			});
-			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					ListView list = (ListView) parent;
-					Item item = (Item) list.getItemAtPosition(position);
-					Intent intent;
-					if(item.getItemValueType().equals("3") | item.getItemValueType().equals("0") ) {
-						intent = new Intent(HostDetailActivity.this,MonitorActivity.class);
-					}else {
-						intent = new Intent(HostDetailActivity.this,MonitorStringActivity.class);
+					public void onScrollStateChanged(AbsListView view, int arg1){
+						
 					}
-					intent.putExtra("item", item);
-					intent.putExtra("itemdescription", item.getItemDescription());
-					intent.putExtra("itemunits",item.getItemUnits());
-					intent.putExtra("hostName", hostName);
-					startActivity(intent);
-				}
-			});
-		}
+				});
+				list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+						ListView list = (ListView) parent;
+						Item item = (Item) list.getItemAtPosition(position);
+						Intent intent;
+						if(item.getItemValueType().equals("3") | item.getItemValueType().equals("0") ) {
+							intent = new Intent(HostDetailActivity.this,MonitorActivity.class);
+						}else {
+							intent = new Intent(HostDetailActivity.this,MonitorStringActivity.class);
+						}
+						intent.putExtra("item", item);
+						intent.putExtra("itemdescription", item.getItemDescription());
+						intent.putExtra("itemunits",item.getItemUnits());
+						intent.putExtra("hostName", hostName);
+						startActivity(intent);
+					}
+				});
+			}else {
+				TextView nodataView = (TextView)this.findViewById(R.id.message);
+				nodataView.setText("No Item!");
+			}
+
+		} catch (IOException e) {
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
+			e.printStackTrace();
+			Toast.makeText(HostDetailActivity.this,"ï¿½Ú‘ï¿½ï¿½Gï¿½ï¿½ï¿½[",Toast.LENGTH_LONG).show();
+			TextView nodataView = (TextView)this.findViewById(R.id.message);
+			nodataView.setText("Connection Error!");
+		}	
         
     }
     
@@ -162,9 +161,9 @@ public class HostDetailActivity extends Activity{
     		try {
 				itemList = zabbix.getItemList(hostID, itemIdList, 20);
 			} catch (IOException e) {
-				// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+				// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 				e.printStackTrace();
-				Toast.makeText(HostDetailActivity.this,"Ú‘±ƒGƒ‰[",Toast.LENGTH_LONG).show();
+				Toast.makeText(HostDetailActivity.this,"ï¿½Ú‘ï¿½ï¿½Gï¿½ï¿½ï¿½[",Toast.LENGTH_LONG).show();
 			}
 			return null;
 		}
@@ -200,22 +199,74 @@ public class HostDetailActivity extends Activity{
     		try {
 				itemIdList = zabbix.getItemIdList(hostID);
 			} catch (IOException e) {
-				// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+				// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 				e.printStackTrace();
-				Toast.makeText(this,"Ú‘±ƒGƒ‰[",Toast.LENGTH_LONG).show();
+				Toast.makeText(this,"ï¿½Ú‘ï¿½ï¿½Gï¿½ï¿½ï¿½[",Toast.LENGTH_LONG).show();
+				TextView nodataView = (TextView)this.findViewById(R.id.message);
+				nodataView.setText("Connection Error!");
 			}
     		
-    		if ( itemIdList.size() != 0) {
+    		if ( itemIdList != null && itemIdList.size() != 0) {
     			try {
 					itemList = zabbix.getItemList(hostID, itemIdList, 20);
+					if ( itemList != null && itemList.size() != 0){
+						adapter = new ItemListAdapter(this, itemList);
+						adapter = new ItemListAdapter(this, itemList);		    
+					    list.addFooterView(getFooter());
+						list.setAdapter(adapter);
+						list.setOnScrollListener(new OnScrollListener() {
+							public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+								if(totalItemCount == firstVisibleItem + visibleItemCount) {
+								
+									if( totalItemCount < itemIdList.size()) {
+										if (mTask == null || mTask.getStatus() != AsyncTask.Status.RUNNING) {
+											mTask = new AsyncItemGetTask().execute();
+										}
+									}
+									else {
+										list.removeFooterView(getFooter());
+									}
+									
+								}
+								
+							}
+							public void onScrollStateChanged(AbsListView view, int arg1){
+								
+							}
+						});
+						list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+							public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+								ListView list = (ListView) parent;
+								Item item = (Item) list.getItemAtPosition(position);
+								Intent intent;
+								if(item.getItemValueType().equals("3") | item.getItemValueType().equals("0") ) {
+									intent = new Intent(HostDetailActivity.this,MonitorActivity.class);
+								}else {
+									intent = new Intent(HostDetailActivity.this,MonitorStringActivity.class);
+								}
+								intent.putExtra("item", item);
+								intent.putExtra("itemdescription", item.getItemDescription());
+								intent.putExtra("itemunits",item.getItemUnits());
+								intent.putExtra("hostName", hostName);
+								startActivity(intent);
+							}
+						});
+						//list.setAdapter(adapter);
+						TextView nodataView = (TextView)this.findViewById(R.id.message);
+						nodataView.setText("");
+					}else{
+						TextView nodataView = (TextView)this.findViewById(R.id.message);
+						nodataView.setText("No Item!");
+					}
 				} catch (IOException e) {
-					// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+					// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 					e.printStackTrace();
-					Toast.makeText(this,"Ú‘±ƒGƒ‰[",Toast.LENGTH_LONG).show();
+					Toast.makeText(this,"ï¿½Ú‘ï¿½ï¿½Gï¿½ï¿½ï¿½[",Toast.LENGTH_LONG).show();
+					TextView nodataView = (TextView)this.findViewById(R.id.message);
+					nodataView.setText("Connection Error!");
 				}
     		}
-    		adapter = new ItemListAdapter(this, itemList);
-    		list.setAdapter(adapter);
+    		
     	}else if( item.getItemId() == 3) {
     		finish();
     	}

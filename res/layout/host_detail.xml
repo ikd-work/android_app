@@ -91,6 +91,11 @@
 		android:text="Last Data"
 		android:textColor="#f0f8ff"
 	/>
+	<TextView 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/message"
+	/>
 	<ListView
 	 	android:id="@+id/itemlistview"
   		android:layout_width="fill_parent"
