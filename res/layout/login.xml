@@ -7,14 +7,14 @@
 	<TextView  
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" 
-    	android:text="Hostname"
+    	android:text="Server URL"
     />
 
     <EditText
     	android:id="@+id/Hostname"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
-    	android:hint="Input hostname"
+    	android:hint="ex. zabbix-server.com/zabbix"
     />
     
     <CheckBox
@@ -32,12 +32,12 @@
     	android:id="@+id/account_name"
     	android:layout_height="wrap_content"
     	android:layout_width="fill_parent"
-    	android:hint="Input login id"
+    	android:hint="ex. apiuser"
     />
 	<TextView  
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" 
-    	android:text="Password"
+    	android:text="ex. zabbixpassword"
     />
 
     <EditText

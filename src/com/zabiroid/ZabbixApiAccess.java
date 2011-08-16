@@ -45,7 +45,7 @@ import android.util.Log;
 
 public class ZabbixApiAccess {
 	
-	private static final String ZABBIX_API_PATH = "/zabbix/api_jsonrpc.php";
+	private static final String ZABBIX_API_PATH = "/api_jsonrpc.php";
 	private static final String CONTENT_TYPE = "application/json-rpc";
 	private String uri;
 	private String host;
@@ -75,7 +75,7 @@ public class ZabbixApiAccess {
 		try {
 			this.jsonObject.put("auth", authToken);
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		}
 		this.setBasicJSONParams();
@@ -128,7 +128,7 @@ public class ZabbixApiAccess {
 			jsonObject.put("id", "1");
 			
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		}	
 		
@@ -144,7 +144,7 @@ public class ZabbixApiAccess {
 		try {
 			jsonObject.put("method", method);
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		}
 	}
@@ -153,7 +153,7 @@ public class ZabbixApiAccess {
 		try {
 			return this.jsonObject.getString("method");
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			return "error";
 		}
@@ -168,7 +168,7 @@ public class ZabbixApiAccess {
 		try {
 			stringEntity = new StringEntity(this.jsonObject.toString());
 		} catch (UnsupportedEncodingException e1) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e1.printStackTrace();
 		}
 		httpPost.setEntity(stringEntity);
@@ -192,7 +192,7 @@ public class ZabbixApiAccess {
 				try {
 					jsonEntity = new JSONObject(entity);
 				} catch (JSONException e) {
-					// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+					// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 					e.printStackTrace();
 				}
 				return jsonEntity;
@@ -204,7 +204,7 @@ public class ZabbixApiAccess {
 			}
 			
 		} catch (ClientProtocolException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			Log.e("ClientProtocol",e.getMessage());
 			return null;
@@ -220,38 +220,38 @@ public class ZabbixApiAccess {
 		try {
 			trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 		} catch (KeyStoreException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		}
 		 try {
 			trustStore.load(null,null);
 		} catch (NoSuchAlgorithmException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		} catch (CertificateException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		}
 		 SSLSocketFactory sf = null;
 		try {
 			sf = new MySSLSocketFactory(trustStore);
 		} catch (KeyManagementException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		//	Log.e("KeyManagement","KeyManagement");
 		} catch (NoSuchAlgorithmException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		//	Log.e("NoSuchAlgorithm","NoSuchAlgorithm");
 		} catch (KeyStoreException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		//	Log.e("KeyStore","KeyStore");
 		} catch (UnrecoverableKeyException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		//	Log.e("UnrecoverableKey","UnrecoverableKey");
 		}
@@ -273,7 +273,7 @@ public class ZabbixApiAccess {
 				try {
 					jsonEntity = new JSONObject(entity);
 				} catch (JSONException e) {
-					// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+					// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 					e.printStackTrace();
 				}
 				return jsonEntity;
@@ -284,7 +284,7 @@ public class ZabbixApiAccess {
 				return null;
 			}
 		} catch (ClientProtocolException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			Log.e("ClientProtocol","ClientProtocol");
 			return null;
@@ -300,14 +300,14 @@ public class ZabbixApiAccess {
 			params.put("password", pass);
 			jsonObject.put("params", params);
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 		}
 		JSONObject response = this.Access();
 		try {
 			return response.getString("result");
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			return "error";
 		} catch (Exception e) {
@@ -369,7 +369,7 @@ public class ZabbixApiAccess {
 			}
 			return null;
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			return hostList;
 		}
@@ -429,7 +429,7 @@ public class ZabbixApiAccess {
 			}
 			return itemList;
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			return itemList;
 		}
@@ -467,7 +467,7 @@ public class ZabbixApiAccess {
 			}
 			return this.itemIdList;
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			return itemIdList;
 		}
@@ -519,7 +519,7 @@ public class ZabbixApiAccess {
 			}
 			return historyDataList;
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			return historyDataList;
 		}
@@ -573,7 +573,7 @@ public class ZabbixApiAccess {
 			}
 			return triggerList;
 		} catch (JSONException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
 			return triggerList;
 		}	
