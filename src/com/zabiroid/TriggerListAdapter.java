@@ -43,8 +43,9 @@ public class TriggerListAdapter extends ArrayAdapter<Trigger>{
 			descriptionView = (TextView)view.findViewById(R.id.description);
 			
 			Date date = new Date();
-			date.setTime(Long.valueOf(lastchange)*1000);
-			
+			if(lastchange != null){
+				date.setTime(Long.valueOf(lastchange)*1000);
+			}
 			lastchangeView.setText(date.toLocaleString());
 			descriptionView.setText(description);
 		}

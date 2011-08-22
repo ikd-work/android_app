@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -41,25 +42,38 @@ public class TriggerActivity extends Activity {
     
         Intent intent = getIntent();
         String hostId = intent.getStringExtra("hostid");
-        String hostName = intent.getStringExtra("hostname");
-        
-        
+        String hostName = intent.getStringExtra("hostname");        
 		zabbix = new ZabbixApiAccess(uri,authToken);
 		ArrayList<Trigger> eventList = null;
 		try {
 			eventList = zabbix.getTriggerList(hostId, 20);
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
+			// TODO 閾ｪ蜍慕函謌舌＆繧後◆ catch 繝悶Ο繝�繧ｯ
 			e.printStackTrace();
-			Toast.makeText(this,"接続エラー",Toast.LENGTH_LONG).show();
+			Toast.makeText(this,"Connection Error!",Toast.LENGTH_LONG).show();
+			Trigger error = new Trigger();
+			error.setDescription("Connection Error!");
+			eventList = new ArrayList<Trigger>();
+			eventList.add(error);
+			adapter = new TriggerListAdapter(this, eventList);
+			list= (ListView)findViewById(R.id.triggerlistview);
+		    list.setAdapter(adapter);
 		}
 		
-		if( eventList != null) {
+		if( eventList != null && eventList.size() != 0) {
 			adapter = new TriggerListAdapter(this, eventList);		    
 			list= (ListView)findViewById(R.id.triggerlistview);
 		    
 			list.setAdapter(adapter);
 		
+		}else{
+			Trigger error = new Trigger();
+			error.setDescription("No Trigger!");
+			eventList = new ArrayList<Trigger>();
+			eventList.add(error);
+			adapter = new TriggerListAdapter(this, eventList);
+			list= (ListView)findViewById(R.id.triggerlistview);
+		    list.setAdapter(adapter);
 		}
     }
 }
