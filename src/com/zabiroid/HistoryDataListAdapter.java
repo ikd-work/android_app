@@ -38,7 +38,9 @@ public class HistoryDataListAdapter extends ArrayAdapter<HistoryData>{
 			String value = history.getValue();
 			
 			Date date = new Date();
-			date.setTime(Long.valueOf(time)*1000);
+			if(time != null){
+				date.setTime(Long.valueOf(time)*1000);
+			}
 			timeView = (TextView)view.findViewById(R.id.history_time);
 			valueView = (TextView)view.findViewById(R.id.history_value);
 			

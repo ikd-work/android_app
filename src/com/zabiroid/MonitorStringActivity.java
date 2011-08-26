@@ -34,24 +34,42 @@ public class MonitorStringActivity extends Activity {
         String authToken = authData.getString("AuthToken", "No Data");
         String uri = authData.getString("URI", "No Data");
 
-        //timerangeì¬
+        //timerangeï¿½ì¬
         Date now = new Date();
         timerange.setTranslateDateToTimeTill(now);
         timerange.setTimeFromBeforeHour(1);
         
         ZabbixApiAccess zabbix = new ZabbixApiAccess(uri,authToken);
 		ArrayList<HistoryData> historyDataList = null;
+		HistoryDataListAdapter adapter = null;
+		ListView list = (ListView)findViewById(R.id.historylistview);
 		try {
 			historyDataList = zabbix.getHistoryData(item, timerange);
+			if(historyDataList != null || historyDataList.size() != 0){
+				list = (ListView)findViewById(R.id.historylistview);
+				adapter = new HistoryDataListAdapter(this,historyDataList);
+				list.setAdapter(adapter);
+			}else{
+				HistoryData error = new HistoryData();
+				error.setValue("No HistoryData!");
+				historyDataList = new ArrayList<HistoryData>();
+				historyDataList.add(error);
+				adapter = new HistoryDataListAdapter(this, historyDataList);
+				list.setAdapter(adapter);
+			}
 		} catch (IOException e) {
-			// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+			// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 			e.printStackTrace();
-			Toast.makeText(this,"Ú‘±ƒGƒ‰[",Toast.LENGTH_LONG).show();
+			Toast.makeText(this,"Connection Error!",Toast.LENGTH_LONG).show();
+			HistoryData error = new HistoryData();
+			error.setValue("Connection Error!");
+			historyDataList = new ArrayList<HistoryData>();
+			historyDataList.add(error);
+			adapter = new HistoryDataListAdapter(this, historyDataList);
+			list.setAdapter(adapter);
 		} 
      
-		ListView list = (ListView)findViewById(R.id.historylistview);
-		HistoryDataListAdapter adapter = new HistoryDataListAdapter(this,historyDataList);
-		list.setAdapter(adapter);
+		
 	}
 
 }

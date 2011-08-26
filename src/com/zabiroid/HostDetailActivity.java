@@ -136,7 +136,7 @@ public class HostDetailActivity extends Activity{
 		} catch (IOException e) {
 			// TODO �����������ꂽ catch �u���b�N
 			e.printStackTrace();
-			Toast.makeText(HostDetailActivity.this,"�ڑ��G���[",Toast.LENGTH_LONG).show();
+			Toast.makeText(HostDetailActivity.this,"Connection Error!",Toast.LENGTH_LONG).show();
 			TextView nodataView = (TextView)this.findViewById(R.id.message);
 			nodataView.setText("Connection Error!");
 		}	
