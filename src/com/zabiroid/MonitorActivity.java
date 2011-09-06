@@ -83,26 +83,22 @@ public class MonitorActivity extends Activity {
         gestureDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
 			
 			public boolean onSingleTapUp(MotionEvent arg0) {
-				// TODO �����������ꂽ���\�b�h�E�X�^�u
 				//Toast.makeText(MonitorActivity.this, "onSingleTapUp", Toast.LENGTH_LONG).show();
 				return false;
 			}
 			
 			public void onShowPress(MotionEvent arg0) {
-				// TODO �����������ꂽ���\�b�h�E�X�^�u
 				//Toast.makeText(MonitorActivity.this, "onShowPress", Toast.LENGTH_LONG).show();
 				
 			}
 			
 			public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
 					float arg3) {
-				// TODO �����������ꂽ���\�b�h�E�X�^�u
 				//Toast.makeText(MonitorActivity.this, "onScroll", Toast.LENGTH_LONG).show();
 				return false;
 			}
 			
 			public void onLongPress(MotionEvent arg0) {
-				// TODO �����������ꂽ���\�b�h�E�X�^�u
 				//Toast.makeText(MonitorActivity.this, "onLongPress", Toast.LENGTH_LONG).show();
 				
 			}
@@ -113,27 +109,24 @@ public class MonitorActivity extends Activity {
 				int pointerCount = arg0.getPointerCount();
 				if ( pointerCount == 1 ) {
 					if (arg0.getX() < arg1.getX()) {
-						Toast.makeText(MonitorActivity.this, "�߂�", Toast.LENGTH_LONG).show();
+						Toast.makeText(MonitorActivity.this,R.string.back, Toast.LENGTH_LONG).show();
 					//	Toast.makeText(MonitorActivity.this, Integer.toString(pointerCount), Toast.LENGTH_LONG).show();
 						//new LoadChartAsyncTask().execute();
 						getPreviousLineChart(timerange.getTimeFrom());
 						//	lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
 					//	lineview.invalidate();
 					}else if (arg0.getX() > arg1.getX()) {
-						Toast.makeText(MonitorActivity.this, "�i��", Toast.LENGTH_LONG).show();
+						Toast.makeText(MonitorActivity.this,R.string.go, Toast.LENGTH_LONG).show();
 						getNextLineChart(timerange.getTimeTill());
 //						lineview.setChart(getNextLineChart(timerange.getTimeTill()));
 //						lineview.invalidate();
 					}
 				}
 				
-				
-				// TODO �����������ꂽ���\�b�h�E�X�^�u
 				return false;
 			}
 			
 			public boolean onDown(MotionEvent arg0) {
-				// TODO �����������ꂽ���\�b�h�E�X�^�u
 				return false;
 			}
 		});
@@ -148,7 +141,7 @@ public class MonitorActivity extends Activity {
         authToken = authData.getString("AuthToken", "No Data");
         uri = authData.getString("URI", "No Data");
 
-        //timerange�쐬
+        //timerange作成
         Date now = new Date();
         timerange.setTranslateDateToTimeTill(now);
         timerange.setTimeFromBeforeHour(1);
@@ -210,7 +203,6 @@ public class MonitorActivity extends Activity {
 					
 				}
 				return gestureDetector.onTouchEvent(event);
-				// TODO �����������ꂽ���\�b�h�E�X�^�u
 			}
 		});
         
@@ -288,7 +280,7 @@ public class MonitorActivity extends Activity {
 		int result2 = (int)result;
 		this.timerange.setTimeFrom(Integer.toString(result2));
 		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
-		Toast.makeText(MonitorActivity.this, "�Y�[��", Toast.LENGTH_LONG).show();
+		Toast.makeText(MonitorActivity.this,R.string.zoom, Toast.LENGTH_LONG).show();
         //return getLineChartView(getDataSet(), itemdescription);
 		getDataSet();
 		return getLineChartView(itemdescription);
@@ -299,7 +291,7 @@ public class MonitorActivity extends Activity {
 		int result2 = (int)result;
 		this.timerange.setTimeFrom(Integer.toString(result2));
 		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);
-		Toast.makeText(MonitorActivity.this, "���C�h", Toast.LENGTH_LONG).show();
+		Toast.makeText(MonitorActivity.this,R.string.wide, Toast.LENGTH_LONG).show();
 		//return getLineChartView(getDataSet(), itemdescription);
 		getDataSet();
 		return getLineChartView(itemdescription);
@@ -316,7 +308,7 @@ public class MonitorActivity extends Activity {
 				dataDir.mkdir();
 		}
 		else {
-			new AlertDialog.Builder(MonitorActivity.this).setMessage("SD�J�[�h������܂���").setPositiveButton("OK",null).show();
+			new AlertDialog.Builder(MonitorActivity.this).setMessage(R.string.not_sdcard).setPositiveButton("OK",null).show();
 		}
 		String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dataDir.getName() + File.separator + "graph.png";
 		if ( bmp != null ) {
@@ -334,7 +326,6 @@ public class MonitorActivity extends Activity {
 				out.flush();
 				
 			} catch (IOException e) {
-				// TODO �����������ꂽ catch �u���b�N
 				e.printStackTrace();
 			}
 		}
@@ -370,7 +361,6 @@ public class MonitorActivity extends Activity {
 		
 		@Override
 		protected String doInBackground(Void... arg0) {
-			// TODO �����������ꂽ���\�b�h�E�X�^�u
 			//lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
 			//lineview.invalidate();
 			

@@ -50,7 +50,7 @@ public class TriggerActivity extends Activity {
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
-			Toast.makeText(this,"Connection Error!",Toast.LENGTH_LONG).show();
+			Toast.makeText(this,R.string.connection_error,Toast.LENGTH_LONG).show();
 			Trigger error = new Trigger();
 			error.setDescription("Connection Error!");
 			eventList = new ArrayList<Trigger>();

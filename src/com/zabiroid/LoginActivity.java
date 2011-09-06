@@ -65,7 +65,6 @@ public class LoginActivity extends Activity {
 
 			
 			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-				// TODO 自動生成されたメソッド・スタブ
 				if ( checkBox.isChecked() != false ) {
 					checkBox.setChecked(true);	
 				}
@@ -94,9 +93,8 @@ public class LoginActivity extends Activity {
 				try {
 					auth_key = zabbix.zabbixAuthenticate(account_name.toString(), pass.toString());
 				} catch (IOException e) {
-					// TODO 自動生成された catch ブロック
 					e.printStackTrace();
-					Toast.makeText(LoginActivity.this,"接続エラー",Toast.LENGTH_LONG).show();
+					Toast.makeText(LoginActivity.this,R.string.connection_error,Toast.LENGTH_LONG).show();
 				}
         		
         		authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
@@ -109,7 +107,7 @@ public class LoginActivity extends Activity {
         			
         		}else {
         			Log.e("auth_keyNG",auth_key);
-        			Toast.makeText(LoginActivity.this,"ログインに失敗しました！",Toast.LENGTH_LONG).show();
+        			Toast.makeText(LoginActivity.this,R.string.auth_failure,Toast.LENGTH_LONG).show();
         		}
  
         		

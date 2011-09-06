@@ -34,7 +34,7 @@ public class MonitorStringActivity extends Activity {
         String authToken = authData.getString("AuthToken", "No Data");
         String uri = authData.getString("URI", "No Data");
 
-        //timerange�쐬
+        //timerange作成
         Date now = new Date();
         timerange.setTranslateDateToTimeTill(now);
         timerange.setTimeFromBeforeHour(1);
@@ -58,9 +58,8 @@ public class MonitorStringActivity extends Activity {
 				list.setAdapter(adapter);
 			}
 		} catch (IOException e) {
-			// TODO �����������ꂽ catch �u���b�N
 			e.printStackTrace();
-			Toast.makeText(this,"Connection Error!",Toast.LENGTH_LONG).show();
+			Toast.makeText(this,R.string.connection_error,Toast.LENGTH_LONG).show();
 			HistoryData error = new HistoryData();
 			error.setValue("Connection Error!");
 			historyDataList = new ArrayList<HistoryData>();

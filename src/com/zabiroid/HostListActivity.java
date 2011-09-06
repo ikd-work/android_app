@@ -73,11 +73,10 @@ public class HostListActivity extends Activity {
 			}
 		
 		} catch (IOException e) {
-			// TODO �����������ꂽ catch �u���b�N
 			e.printStackTrace();
-			Toast.makeText(HostListActivity.this,"�ڑ��G���[",Toast.LENGTH_LONG).show();
+			Toast.makeText(HostListActivity.this,R.string.connection_error,Toast.LENGTH_LONG).show();
 			TextView error_view = (TextView)findViewById(R.id.message);
-			error_view.setText("Connection Error!");
+			error_view.setText(R.string.connection_error);
 			//setContentView(error_view,new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		}
 		
@@ -125,14 +124,13 @@ public class HostListActivity extends Activity {
 					error_view.setText("");
 				}else{
 					TextView error_view = (TextView)findViewById(R.id.message);
-					error_view.setText("Connection Error!");
+					error_view.setText(R.string.connection_error);
 				}
 			} catch (IOException e) {
-				// TODO �����������ꂽ catch �u���b�N
 				e.printStackTrace();
-				Toast.makeText(HostListActivity.this,"�ڑ��G���[",Toast.LENGTH_LONG).show();
+				Toast.makeText(HostListActivity.this,R.string.connection_error,Toast.LENGTH_LONG).show();
 				TextView error_view = (TextView)findViewById(R.id.message);
-				error_view.setText("Connection Error!");
+				error_view.setText(R.string.connection_error);
 			}        	
     		
     	}else if( item.getItemId() == 3) {

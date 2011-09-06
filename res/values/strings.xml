@@ -12,4 +12,13 @@
     <string name="refresh">Refresh</string>
     <string name="exit">Exit</string>
     <string name="hostlist">Back to HostList</string>
+    <string name="connection_error">Connection Error!</string>
+    <string name="monitored_status">Monitored</string>
+    <string name="not_monitored_status">Not Monitored</string>
+    <string name="auth_failure">Authentication Failure!</string>
+    <string name="back">back</string>
+    <string name="go">next</string>
+    <string name="zoom">zoom</string>
+    <string name="wide">wide</string>
+    <string name="not_sdcard">"Can't Access SD Card!"</string>
 </resources>

@@ -69,13 +69,13 @@ public class HostDetailActivity extends Activity{
         textViewHostName.setText(hostName);
         
         if (hostStatus.equals("1")) {
-        	textViewHostStatus.setText("����");
+        	textViewHostStatus.setText(R.string.not_monitored_status);
         	textViewHostStatus.setTextColor(Color.RED);
         	TextView textViewTitle = (TextView)this.findViewById(R.id.host_detail_status_title);
         	textViewTitle.setTextColor(Color.RED);
         }
         else {
-        	textViewHostStatus.setText("�L��");
+        	textViewHostStatus.setText(R.string.monitored_status);
         }
         
         textViewHostDns.setText(hostDns);
@@ -134,11 +134,10 @@ public class HostDetailActivity extends Activity{
 			}
 
 		} catch (IOException e) {
-			// TODO �����������ꂽ catch �u���b�N
 			e.printStackTrace();
-			Toast.makeText(HostDetailActivity.this,"Connection Error!",Toast.LENGTH_LONG).show();
+			Toast.makeText(HostDetailActivity.this,R.string.connection_error,Toast.LENGTH_LONG).show();
 			TextView nodataView = (TextView)this.findViewById(R.id.message);
-			nodataView.setText("Connection Error!");
+			nodataView.setText(R.string.connection_error);
 		}	
         
     }
@@ -161,9 +160,8 @@ public class HostDetailActivity extends Activity{
     		try {
 				itemList = zabbix.getItemList(hostID, itemIdList, 20);
 			} catch (IOException e) {
-				// TODO �����������ꂽ catch �u���b�N
 				e.printStackTrace();
-				Toast.makeText(HostDetailActivity.this,"�ڑ��G���[",Toast.LENGTH_LONG).show();
+				Toast.makeText(HostDetailActivity.this,R.string.connection_error,Toast.LENGTH_LONG).show();
 			}
 			return null;
 		}
@@ -199,11 +197,10 @@ public class HostDetailActivity extends Activity{
     		try {
 				itemIdList = zabbix.getItemIdList(hostID);
 			} catch (IOException e) {
-				// TODO �����������ꂽ catch �u���b�N
 				e.printStackTrace();
-				Toast.makeText(this,"�ڑ��G���[",Toast.LENGTH_LONG).show();
+				Toast.makeText(this,R.string.connection_error,Toast.LENGTH_LONG).show();
 				TextView nodataView = (TextView)this.findViewById(R.id.message);
-				nodataView.setText("Connection Error!");
+				nodataView.setText(R.string.connection_error);
 			}
     		
     		if ( itemIdList != null && itemIdList.size() != 0) {
@@ -261,9 +258,9 @@ public class HostDetailActivity extends Activity{
 				} catch (IOException e) {
 					// TODO �����������ꂽ catch �u���b�N
 					e.printStackTrace();
-					Toast.makeText(this,"�ڑ��G���[",Toast.LENGTH_LONG).show();
+					Toast.makeText(this,R.string.connection_error,Toast.LENGTH_LONG).show();
 					TextView nodataView = (TextView)this.findViewById(R.id.message);
-					nodataView.setText("Connection Error!");
+					nodataView.setText(R.string.connection_error);
 				}
     		}
     		
