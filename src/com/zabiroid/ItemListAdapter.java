@@ -1,6 +1,7 @@
 package com.zabiroid;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 
 import com.zabiroid.R;
 
@@ -37,7 +38,20 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 		if( item != null){
 			//String itemid = item.getItemId();
 			String itemdescription = item.getItemDescription();
-			//Log.e("Description",itemdescription);
+			String itemkey = item.getItemKey();
+			int begin = itemkey.indexOf("[");
+			int end = itemkey.indexOf("]");
+			if( begin != -1 && end != -1){
+				String optionslist = itemkey.substring(begin+1, end);
+				String[] options = optionslist.split(",");			
+				for(int i=0 ; i<options.length ; i++){
+					String check = "$" + (i+1);
+					if(itemdescription.indexOf(check) != -1 ){
+						check = Matcher.quoteReplacement(check);
+						itemdescription = itemdescription.replaceAll(check, options[i]);
+					}
+				}
+			}
 			String itemvalue = item.getItemValue();
 			Log.e("Value",itemvalue);
 			itemView = (TextView)view.findViewById(R.id.item);
