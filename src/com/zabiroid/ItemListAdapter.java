@@ -49,6 +49,7 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 					if(itemdescription.indexOf(check) != -1 ){
 						check = Matcher.quoteReplacement(check);
 						itemdescription = itemdescription.replaceAll(check, options[i]);
+						item.setItemDescription(itemdescription);
 					}
 				}
 			}

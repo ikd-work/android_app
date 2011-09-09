@@ -266,7 +266,7 @@ public class MonitorActivity extends Activity {
 		{
 			timerange.setTimeTill(Integer.toString(no));
 			timerange.setTimeFrom(Integer.toString(no-dif2));
-			Toast.makeText(MonitorActivity.this, "�ŐV", Toast.LENGTH_LONG).show();
+			Toast.makeText(MonitorActivity.this, R.string.latest, Toast.LENGTH_LONG).show();
 		}
 		
 		//ArrayList<HistoryData> historyDataList = zabbix.getHistoryData(authToken, item, timerange);

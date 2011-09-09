@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +48,11 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 			hostNameView = (TextView)view.findViewById(R.id.host_name);
 			triggerView = (ImageView)view.findViewById(R.id.fire_image);
 			errorNumView = (TextView)view.findViewById(R.id.error_num);
-			
 			if (hoststatus.equals("1")) {
+				
 				hostNameView.setTextColor(Color.RED);
+			}else{
+				hostNameView.setTextColor(Color.CYAN);
 			}
 			hostNameView.setText(hostname);
 			errorNumView.setText(Integer.toString(errornum));
