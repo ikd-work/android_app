@@ -22,4 +22,5 @@
     <string name="wide">wide</string>
     <string name="not_sdcard">"Can't Access SD Card!"</string>
     <string name="latest">"latest"</string>
+    <string name="empty_error">"Fill in All TextBox!"</string>
 </resources>

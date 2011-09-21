@@ -83,31 +83,41 @@ public class LoginActivity extends Activity {
         		EditText hostText = (EditText)findViewById(R.id.Hostname);
         		EditText editText = (EditText)findViewById(R.id.account_name);
         		EditText passText = (EditText)findViewById(R.id.password);
-        		CharSequence host = hostText.getText();
-        		CharSequence account_name = editText.getText();
-        		CharSequence pass = passText.getText();
+        		String host = hostText.getText().toString();
+        		String account_name = editText.getText().toString();
+        		String pass = passText.getText().toString();
         		CheckBox checkBox = (CheckBox)findViewById(R.id.https_check);
         		Boolean https = checkBox.isChecked();
-        		ZabbixApiAccess zabbix = new ZabbixApiAccess(host.toString(),https);
-        		String auth_key = null;
-				try {
-					auth_key = zabbix.zabbixAuthenticate(account_name.toString(), pass.toString());
-				} catch (IOException e) {
-					e.printStackTrace();
-					Toast.makeText(LoginActivity.this,R.string.connection_error,Toast.LENGTH_LONG).show();
-				}
+        		host = host.trim();
+        		account_name = account_name.trim();
+        		pass = pass.trim();
+        		if(host.length() != 0 && account_name.length() != 0 && pass.length() != 0){
+        			ZabbixApiAccess zabbix = new ZabbixApiAccess(host,https);
+        			String auth_key = null;
+        			try {
+        				
+        				auth_key = zabbix.zabbixAuthenticate(account_name, pass);
+        				authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
+            			authData.edit().putString("AuthToken", auth_key).commit();
+            			authData.edit().putString("URI", zabbix.getUri()).commit();
+        			} catch (IOException e) {
+        				e.printStackTrace();
+        				auth_key = "error";
+        				Toast.makeText(LoginActivity.this,R.string.connection_error,Toast.LENGTH_LONG).show();
+        			}
         		
-        		authData = getSharedPreferences(PREFERENCE_KEY, Activity.MODE_APPEND);
-        		authData.edit().putString("AuthToken", auth_key).commit();
-        		authData.edit().putString("URI", zabbix.getUri()).commit();
-        		
-        		if ( auth_key != "error" ){
-        			Log.e("auth_keyOK",auth_key);
-        			startActivityForResult(intent, SHOW_EDITOR);
         			
-        		}else {
-        			Log.e("auth_keyNG",auth_key);
-        			Toast.makeText(LoginActivity.this,R.string.auth_failure,Toast.LENGTH_LONG).show();
+        		
+        			if ( auth_key != "error" ){
+        				Log.e("auth_keyOK",auth_key);
+        				startActivityForResult(intent, SHOW_EDITOR);
+        			
+        			}else {
+        				Log.e("auth_keyNG",auth_key);
+        				Toast.makeText(LoginActivity.this,R.string.auth_failure,Toast.LENGTH_LONG).show();
+        			}
+        		}else{
+        			Toast.makeText(LoginActivity.this,R.string.empty_error,Toast.LENGTH_LONG).show();
         		}
  
         		

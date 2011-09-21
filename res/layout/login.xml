@@ -37,7 +37,7 @@
 	<TextView  
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" 
-    	android:text="ex. zabbixpassword"
+    	android:text="Password"
     />
 
     <EditText
@@ -45,7 +45,7 @@
     	android:layout_height="wrap_content"
     	android:layout_width="fill_parent"
     	android:password="true"
-    	android:hint="Input password"
+    	android:hint="ex. zabbixpassword"
     />
     <Button
     	android:id="@+id/login_button"
