@@ -9,6 +9,7 @@ public class Item implements Serializable {
 	private String itemValue;
 	private String itemValueType;
 	private String itemUnits;
+	private String itemLastClock;
 	
 	public Item() {
 		itemId = "";
@@ -42,6 +43,10 @@ public class Item implements Serializable {
 		itemUnits = itemunits;
 	}
 	
+	public void setItemLastClock(String itemlastclock) {
+		itemLastClock = itemlastclock;
+	}
+	
 	public String getItemId() {
 		return itemId;
 	}
@@ -64,6 +69,10 @@ public class Item implements Serializable {
 	
 	public String getItemUnits() {
 		return itemUnits;
+	}
+	
+	public String getItemLastClock() {
+		return itemLastClock;
 	}
 	
 }

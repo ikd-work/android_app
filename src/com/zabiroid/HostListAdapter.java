@@ -55,17 +55,22 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 				hostNameView.setTextColor(Color.CYAN);
 			}
 			hostNameView.setText(hostname);
-			errorNumView.setText(Integer.toString(errornum));
+			if (errornum == 0){
+				triggerView.setImageResource(R.drawable.ok_icon);
+			}else{
+				errorNumView.setText(Integer.toString(errornum));
+				triggerView.setImageResource(R.drawable.fire_icon);
 		
-			triggerView.setOnClickListener(new View.OnClickListener(){
+				triggerView.setOnClickListener(new View.OnClickListener(){
 				
-				public void onClick(View v) {
-					Intent intent = new Intent(v.getContext(),TriggerActivity.class);
-					intent.putExtra("hostid", hostid);
-					intent.putExtra("hostname", hostname);
-					v.getContext().startActivity(intent);
-				}
-			});
+					public void onClick(View v) {
+						Intent intent = new Intent(v.getContext(),TriggerActivity.class);
+						intent.putExtra("hostid", hostid);
+						intent.putExtra("hostname", hostname);
+						v.getContext().startActivity(intent);
+					}
+				});
+			}
 		}
 		return view;
 	}

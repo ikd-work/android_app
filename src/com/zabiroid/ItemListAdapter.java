@@ -1,6 +1,7 @@
 package com.zabiroid;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 
 import com.zabiroid.R;
@@ -19,6 +20,7 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 	private LayoutInflater inflater;
 	private TextView itemView;
 	private TextView valueView;
+	private TextView lastClockView;
 
 	public ItemListAdapter(Context context, ArrayList<Item> objects) {
 		super(context, 0, objects);
@@ -39,6 +41,13 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 			//String itemid = item.getItemId();
 			String itemdescription = item.getItemDescription();
 			String itemkey = item.getItemKey();
+			String itemlastclock = item.getItemLastClock();
+			
+			Date date = new Date();
+			if(itemlastclock != null){
+				date.setTime(Long.valueOf(itemlastclock)*1000);
+			}
+			
 			int begin = itemkey.indexOf("[");
 			int end = itemkey.indexOf("]");
 			if( begin != -1 && end != -1){
@@ -57,6 +66,7 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 			Log.e("Value",itemvalue);
 			itemView = (TextView)view.findViewById(R.id.item);
 			valueView = (TextView)view.findViewById(R.id.value);
+			lastClockView = (TextView)view.findViewById(R.id.lastclock);
 			
 			itemView.setText(itemdescription);
 			if ( itemvalue != "") {
@@ -64,7 +74,7 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 			}else {
 				valueView.setText("No Data");
 			}
-			
+			lastClockView.setText(date.toLocaleString());
 			
 		}
 		return view;
