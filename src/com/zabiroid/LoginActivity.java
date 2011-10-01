@@ -89,9 +89,20 @@ public class LoginActivity extends Activity {
         		CheckBox checkBox = (CheckBox)findViewById(R.id.https_check);
         		Boolean https = checkBox.isChecked();
         		host = host.trim();
+        		host = host.replaceAll("[ ]", "");
+        		host = host.replaceAll("[　]", "");
         		account_name = account_name.trim();
         		pass = pass.trim();
         		if(host.length() != 0 && account_name.length() != 0 && pass.length() != 0){
+        			Log.e("http://",host.substring(0,7));
+        			if(host.length()>8){
+        				if(host.substring(0,7).equals("http://")){
+        					host = host.substring(7);
+        				}else if(host.substring(0,8).equals("https://")){
+        					host = host.substring(8);
+        				}
+        			}
+        			
         			ZabbixApiAccess zabbix = new ZabbixApiAccess(host,https);
         			String auth_key = null;
         			try {
