@@ -172,7 +172,6 @@ public class MonitorActivity extends Activity {
 				int action = event.getAction();
 				
 				if ( pointerCount == 2 ) {
-					Log.d("action",Integer.toString(action));
 					if ( action == MotionEvent.ACTION_POINTER_2_DOWN) {
 						down_x0 = event.getX(0);
 						down_x1 = event.getX(1);
@@ -181,8 +180,6 @@ public class MonitorActivity extends Activity {
 					else if ( action == MotionEvent.ACTION_POINTER_2_UP | action == MotionEvent.ACTION_POINTER_1_UP) {
 						up_x0 = event.getX(0);
 						up_x1 = event.getX(1);
-						Log.d("up_x0",Float.toString(up_x0));
-						Log.d("up_x1",Float.toString(up_x1));
 						if ( Math.abs(up_x0 - up_x1) < Math.abs(down_x0 - down_x1) ) {
 							down_x0 = 0;
 							down_x1 = 0;
@@ -258,7 +255,6 @@ public class MonitorActivity extends Activity {
 		Date now = new Date();
 		long now_unixtime = now.getTime()/1000;
 		int no = (int)now_unixtime;
-		Log.d("now_unixtime",Integer.toString(no));
 		timerange.setTimeFrom(time);
 		if( result2 <= no ) {
 			timerange.setTimeTill(Integer.toString(result2));	
@@ -316,7 +312,6 @@ public class MonitorActivity extends Activity {
 			
 			//FileOutputStream output = openFileOutput(filePath,Context.MODE_WORLD_READABLE);
 			bmp.compress(Bitmap.CompressFormat.PNG, 100, os);
-			Log.e("outputStream",Integer.toString(os.size()));
 			try {
 				os.flush();
 				byte[] w = os.toByteArray();
@@ -372,11 +367,8 @@ public class MonitorActivity extends Activity {
 				e.printStackTrace();
 				Toast.makeText(MonitorActivity.this,"Connection Error!",Toast.LENGTH_LONG).show();
 			}
-			Log.d("backgournd","back");
 			TimeSeries series = new TimeSeries(itemdescription, Second.class);
-			Log.d("backgournd","back2");
 	        int count = historyDataList.size();
-	        Log.e("SIZE", Integer.toString(count));
 	        
 	        for(int i=0; i < count; i++) {
 	        	TimeRange t = new TimeRange();
@@ -389,7 +381,6 @@ public class MonitorActivity extends Activity {
 	        	double progress = (double)i/(double)count*100;
 	        	if (i%10==0){
 	        		onProgressUpdate((int)progress);
-		        	Log.d("progress",Double.toString(progress));
 	        	}
 	        	
 	        }

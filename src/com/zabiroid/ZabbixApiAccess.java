@@ -178,9 +178,7 @@ public class ZabbixApiAccess {
 	private JSONObject httpAccess() throws IOException {
 		try {
 			HttpResponse httpResponse = httpClient.execute(httpPost);
-			Log.e("response",httpResponse.toString());
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
-			Log.e("Statuscode",Integer.toString(statusCode));
 			if (statusCode == HttpStatus.SC_OK)
 			{
 				String entity = EntityUtils.toString(httpResponse.getEntity());
@@ -199,7 +197,6 @@ public class ZabbixApiAccess {
 			
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
-			Log.e("ClientProtocol",e.getMessage());
 			return null;
 		}	
 	}
@@ -229,27 +226,19 @@ public class ZabbixApiAccess {
 			sf = new MySSLSocketFactory(trustStore);
 		} catch (KeyManagementException e) {
 			e.printStackTrace();
-		//	Log.e("KeyManagement","KeyManagement");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-		//	Log.e("NoSuchAlgorithm","NoSuchAlgorithm");
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
-		//	Log.e("KeyStore","KeyStore");
 		} catch (UnrecoverableKeyException e) {
 			e.printStackTrace();
-		//	Log.e("UnrecoverableKey","UnrecoverableKey");
 		}
 		 Scheme https = new Scheme("https", sf, 443);
-		// Log.e("Scheme",https.getSocketFactory().toString());
-		// Log.e("connectionManager1",httpclient.getConnectionManager().toString());
 	     httpclient.getConnectionManager().getSchemeRegistry().register(https);
-	    // Log.e("connectionManager2",httpclient.getConnectionManager().getSchemeRegistry().toString());
 	     httpcontext.setAttribute(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 	     httpcontext.setAttribute(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
 	     httpcontext.setAttribute(CoreProtocolPNames.HTTP_CONTENT_CHARSET, HTTP.UTF_8);
 		 try {
-			 Log.e("httpPost",httpPost.getURI().toString());
 			HttpResponse httpResponse = httpclient.execute(httpPost,httpcontext);
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK)
@@ -269,7 +258,6 @@ public class ZabbixApiAccess {
 			}
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
-			Log.e("ClientProtocol","ClientProtocol");
 			return null;
 		}
 		 
@@ -335,14 +323,11 @@ public class ZabbixApiAccess {
 					host.setHostDns(resultObject.getJSONObject(i).getString("dns"));
 					host.setHostIp(resultObject.getJSONObject(i).getString("ip"));
 					//hostList.add(resultObject.getJSONObject(i).getString("host"));
-					Log.e("hostID",host.getHostId());
-					Log.e("hostName",host.getHostName());
 					trigger = this.getTriggerList(host.getHostId(), 0);
 					int errornum = 0;
 					if (trigger != null) {
 						errornum = trigger.size();
 					}
-					Log.e("errornum",Integer.toString(errornum));
 					host.setErrorNum(errornum);
 					hostList.add(host);
 				}			
@@ -368,8 +353,6 @@ public class ZabbixApiAccess {
 		//	this.jsonObject.put("method", "item.get");
 			subParams.put("output","extend");
 			JSONArray idarray = new JSONArray();
-			//Log.e("itemid",itemIdList.get(0));
-			Log.e("position",Integer.toString(position));
 			for (int i=0; i<num; i++) {
 				if ( position < itemIdList.size() ){
 					idarray.put(itemIdList.get(this.position));
@@ -489,9 +472,7 @@ public class ZabbixApiAccess {
 					HistoryData historyData = new HistoryData();
 					historyData.setUnixtime(resultObject.getJSONObject(i).getString("clock"));
 					historyData.setValue(resultObject.getJSONObject(i).getString("value"));
-					
-					Log.e("Clock",historyData.getUnixtime());
-					Log.e("VaLue",historyData.getValue());
+				
 					//hostList.add(resultObject.getJSONObject(i).getString("host"));
 					historyDataList.add(historyData);
 				}			

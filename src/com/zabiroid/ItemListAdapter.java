@@ -47,7 +47,6 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 			lastClockView = (TextView)view.findViewById(R.id.lastclock);
 			
 			Date date = new Date();
-			Log.e("LAST",itemlastclock);
 			if(itemlastclock != null && itemlastclock != "null"){
 				date.setTime(Long.valueOf(itemlastclock)*1000);
 				lastClockView.setText(date.toLocaleString());
@@ -70,7 +69,6 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 				}
 			}
 			String itemvalue = item.getItemValue();
-			Log.e("Value",itemvalue);
 			
 			
 			itemView.setText(itemdescription);

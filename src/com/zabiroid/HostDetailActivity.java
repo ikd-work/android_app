@@ -59,7 +59,6 @@ public class HostDetailActivity extends Activity{
         String uri = authData.getString("URI", "No Data");
         
         list = (ListView)findViewById(R.id.itemlistview);
-        Log.e("list",list.toString());
         TextView textViewHostId = (TextView)this.findViewById(R.id.host_detail_id);
         TextView textViewHostName = (TextView)this.findViewById(R.id.host_detail_name);
         TextView textViewHostStatus = (TextView)this.findViewById(R.id.host_detail_status);

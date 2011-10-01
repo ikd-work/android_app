@@ -94,7 +94,6 @@ public class LoginActivity extends Activity {
         		account_name = account_name.trim();
         		pass = pass.trim();
         		if(host.length() != 0 && account_name.length() != 0 && pass.length() != 0){
-        			Log.e("http://",host.substring(0,7));
         			if(host.length()>8){
         				if(host.substring(0,7).equals("http://")){
         					host = host.substring(7);
@@ -120,11 +119,9 @@ public class LoginActivity extends Activity {
         			
         		
         			if ( auth_key != "error" ){
-        				Log.e("auth_keyOK",auth_key);
         				startActivityForResult(intent, SHOW_EDITOR);
         			
         			}else {
-        				Log.e("auth_keyNG",auth_key);
         				Toast.makeText(LoginActivity.this,R.string.auth_failure,Toast.LENGTH_LONG).show();
         			}
         		}else{

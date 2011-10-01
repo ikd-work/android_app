@@ -27,20 +27,17 @@ public class MySSLSocketFactory extends SSLSocketFactory{
             KeyStoreException, UnrecoverableKeyException {
         super(truststore);
         
-        // ©ŒÈ–¼Ø–¾‘‚ğó‚¯•t‚¯‚éƒJƒXƒ^ƒ€SSLContext‚Ì€”õ
+        // ï¿½ï¿½ï¿½Èï¿½ï¿½ï¿½ï¿½Ø–ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó‚¯•tï¿½ï¿½ï¿½ï¿½Jï¿½Xï¿½^ï¿½ï¿½SSLContextï¿½Ìï¿½ï¿½ï¿½
         TrustManager tm = new X509TrustManager() {
             public void checkClientTrusted(X509Certificate[] chain,
                     String authType) throws CertificateException {
-            	Log.e("checkClientTrusted","checkClientTrusted");
             }
  
             public void checkServerTrusted(X509Certificate[] chain,
                     String authType) throws CertificateException {
-            	Log.e("checkServerTrusted","checkServerTrusted");
             }
  
             public X509Certificate[] getAcceptedIssuers() {
-            	Log.e("X509Certificate","X509Certificate");
             	return null;
                 
             }
@@ -51,16 +48,13 @@ public class MySSLSocketFactory extends SSLSocketFactory{
     @Override
     public Socket createSocket(Socket socket, String host, int port,
             boolean autoClose) throws IOException, UnknownHostException {
-        // ƒJƒXƒ^ƒ€SSLContextŒo—R‚Å¶¬‚µ‚½SSLƒ\ƒPƒbƒg‚ğ•Ô‚·B
-    	Log.e("createSocket1","createSocket1");
+        // ï¿½Jï¿½Xï¿½^ï¿½ï¿½SSLContextï¿½oï¿½Rï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SSLï¿½\ï¿½Pï¿½bï¿½gï¿½ï¿½Ô‚ï¿½ï¿½B
         return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
     }
  
     @Override
     public Socket createSocket() throws IOException {
-        // ƒJƒXƒ^ƒ€SSLContextŒo—R‚Å¶¬‚µ‚½SSLƒ\ƒPƒbƒg‚ğ•Ô‚·B
-    	Log.e("createSocket2","createSocket2");
-    	//Log.e("Socket",sslContext.getSocketFactory().createSocket().toString());
+        // ï¿½Jï¿½Xï¿½^ï¿½ï¿½SSLContextï¿½oï¿½Rï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SSLï¿½\ï¿½Pï¿½bï¿½gï¿½ï¿½Ô‚ï¿½ï¿½B
         return sslContext.getSocketFactory().createSocket();
     }
 	
