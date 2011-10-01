@@ -42,10 +42,17 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 			String itemdescription = item.getItemDescription();
 			String itemkey = item.getItemKey();
 			String itemlastclock = item.getItemLastClock();
+			itemView = (TextView)view.findViewById(R.id.item);
+			valueView = (TextView)view.findViewById(R.id.value);
+			lastClockView = (TextView)view.findViewById(R.id.lastclock);
 			
 			Date date = new Date();
-			if(itemlastclock != null){
+			Log.e("LAST",itemlastclock);
+			if(itemlastclock != null && itemlastclock != "null"){
 				date.setTime(Long.valueOf(itemlastclock)*1000);
+				lastClockView.setText(date.toLocaleString());
+			}else{
+				lastClockView.setText("-");
 			}
 			
 			int begin = itemkey.indexOf("[");
@@ -64,9 +71,7 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 			}
 			String itemvalue = item.getItemValue();
 			Log.e("Value",itemvalue);
-			itemView = (TextView)view.findViewById(R.id.item);
-			valueView = (TextView)view.findViewById(R.id.value);
-			lastClockView = (TextView)view.findViewById(R.id.lastclock);
+			
 			
 			itemView.setText(itemdescription);
 			if ( itemvalue != "") {
@@ -74,7 +79,7 @@ public class ItemListAdapter extends ArrayAdapter<Item>{
 			}else {
 				valueView.setText("No Data");
 			}
-			lastClockView.setText(date.toLocaleString());
+			
 			
 		}
 		return view;
