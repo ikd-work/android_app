@@ -363,7 +363,7 @@ public class MonitorActivity extends Activity {
 			try {
 				historyDataList = zabbix.getHistoryData(item, timerange);
 			} catch (IOException e) {
-				// TODO �����������ꂽ catch �u���b�N
+			
 				e.printStackTrace();
 				Toast.makeText(MonitorActivity.this,"Connection Error!",Toast.LENGTH_LONG).show();
 			}
@@ -374,7 +374,7 @@ public class MonitorActivity extends Activity {
 	        	TimeRange t = new TimeRange();
 	        	t.setTimeTill(historyDataList.get(i).getUnixtime());
 	        	if(item.getItemValueType().equals("3")) {
-	        		series.add(new Second(t.getTimeTillAtDateType()),Integer.valueOf(historyDataList.get(i).getValue()));
+	        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
 	        	}else if (item.getItemValueType().equals("0")) {
 	        		series.add(new Second(t.getTimeTillAtDateType()),Double.valueOf(historyDataList.get(i).getValue()));
 	        	}
