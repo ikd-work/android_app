@@ -80,7 +80,7 @@ public class MonitorActivity extends Activity {
         setTitle(R.string.title_monitor_result);
         
         
-        gestureDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+        gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
 			
 			public boolean onSingleTapUp(MotionEvent arg0) {
 				//Toast.makeText(MonitorActivity.this, "onSingleTapUp", Toast.LENGTH_LONG).show();
@@ -101,6 +101,11 @@ public class MonitorActivity extends Activity {
 			public void onLongPress(MotionEvent arg0) {
 				//Toast.makeText(MonitorActivity.this, "onLongPress", Toast.LENGTH_LONG).show();
 				
+			}
+			
+			public boolean onDoubleTap(MotionEvent arg0) {
+				sendLineViewImage();   
+        		return true;
 			}
 			
 			public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2,
@@ -153,7 +158,7 @@ public class MonitorActivity extends Activity {
         getLineChartView(itemdescription);
         lineview.setOnLongClickListener(new View.OnLongClickListener(){      	
         	public boolean onLongClick(View v) {
-            	sendLineViewImage();   
+          //  	sendLineViewImage();   
         		return true;
         	}
         	
@@ -180,7 +185,7 @@ public class MonitorActivity extends Activity {
 					else if ( action == MotionEvent.ACTION_POINTER_2_UP | action == MotionEvent.ACTION_POINTER_1_UP) {
 						up_x0 = event.getX(0);
 						up_x1 = event.getX(1);
-						if ( Math.abs(down_x0 - down_x1) - Math.abs(up_x0 - up_x1) > 300 ) {
+						if ( Math.abs(down_x0 - down_x1) - Math.abs(up_x0 - up_x1) > 250 ) {
 							down_x0 = 0;
 							down_x1 = 0;
 							up_x0 = 0;
@@ -189,7 +194,7 @@ public class MonitorActivity extends Activity {
 							lineview.invalidate();
 							
 							return true;
-						} else if ( Math.abs(up_x0 - up_x1) - Math.abs(down_x0 - down_x1) > 300) {
+						} else if ( Math.abs(up_x0 - up_x1) - Math.abs(down_x0 - down_x1) > 250) {
 							
 							lineview.setChart(getHarfTimeLineChart(timerange));
 							lineview.invalidate();
