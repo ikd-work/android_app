@@ -56,7 +56,7 @@ public class ZabbixApiAccess {
 	private int position = 0;
 	private String authToken;
 	JSONObject jsonEntity = null;
-	HttpClient httpClient = new DefaultHttpClient();
+	HttpClient httpClient;
 	
 	ZabbixApiAccess(String host, boolean https){
 		this.host = host;
@@ -158,6 +158,7 @@ public class ZabbixApiAccess {
 	private JSONObject Access() throws IOException {
 		httpPost = new HttpPost(this.uri);
 		httpPost.setHeader("Content-type", CONTENT_TYPE);
+		httpClient = new DefaultHttpClient();
 		HttpParams params = httpClient.getParams();
 		HttpConnectionParams.setConnectionTimeout(params, 10000);
 		StringEntity stringEntity = null;

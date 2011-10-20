@@ -108,14 +108,14 @@ public class MonitorActivity extends Activity {
 				
 				int pointerCount = arg0.getPointerCount();
 				if ( pointerCount == 1 ) {
-					if (arg0.getX() < arg1.getX()) {
+					if (arg1.getX() - arg0.getX() > 200) {
 						Toast.makeText(MonitorActivity.this,R.string.back, Toast.LENGTH_LONG).show();
 					//	Toast.makeText(MonitorActivity.this, Integer.toString(pointerCount), Toast.LENGTH_LONG).show();
 						//new LoadChartAsyncTask().execute();
 						getPreviousLineChart(timerange.getTimeFrom());
 						//	lineview.setChart(getPreviousLineChart(timerange.getTimeFrom()));
 					//	lineview.invalidate();
-					}else if (arg0.getX() > arg1.getX()) {
+					}else if (arg0.getX() - arg1.getX() > 200) {
 						Toast.makeText(MonitorActivity.this,R.string.go, Toast.LENGTH_LONG).show();
 						getNextLineChart(timerange.getTimeTill());
 //						lineview.setChart(getNextLineChart(timerange.getTimeTill()));
@@ -180,7 +180,7 @@ public class MonitorActivity extends Activity {
 					else if ( action == MotionEvent.ACTION_POINTER_2_UP | action == MotionEvent.ACTION_POINTER_1_UP) {
 						up_x0 = event.getX(0);
 						up_x1 = event.getX(1);
-						if ( Math.abs(up_x0 - up_x1) < Math.abs(down_x0 - down_x1) ) {
+						if ( Math.abs(down_x0 - down_x1) - Math.abs(up_x0 - up_x1) > 300 ) {
 							down_x0 = 0;
 							down_x1 = 0;
 							up_x0 = 0;
@@ -189,7 +189,7 @@ public class MonitorActivity extends Activity {
 							lineview.invalidate();
 							
 							return true;
-						} else if ( Math.abs(up_x0 - up_x1) > Math.abs(down_x0 - down_x1)) {
+						} else if ( Math.abs(up_x0 - up_x1) - Math.abs(down_x0 - down_x1) > 300) {
 							
 							lineview.setChart(getHarfTimeLineChart(timerange));
 							lineview.invalidate();
