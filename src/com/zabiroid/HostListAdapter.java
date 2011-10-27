@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class HostListAdapter extends ArrayAdapter<Host>{
@@ -26,6 +28,7 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 	private TextView errorNumView;
 	private Button triggerButton;
 	private Button detailButton;
+	private Host host;
 	
 	
 	public HostListAdapter(Context context, ArrayList<Host> objects) {
@@ -41,7 +44,7 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 			view = inflater.inflate(R.layout.host, null);
 		}
 		
-		Host host = this.getItem(position);
+		host = this.getItem(position);
 		
 		if( host != null){
 			final String hostid = host.getHostId();
@@ -76,6 +79,19 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 					}
 				});
 			}
+			detailButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					Intent intent = new Intent(v.getContext(),HostDetailActivity.class);
+					intent.putExtra("hostid", host.getHostId());
+					intent.putExtra("hostname", host.getHostName());
+					intent.putExtra("hoststatus", host.getHostStatus());
+					intent.putExtra("hostdns", host.getHostDns());
+					intent.putExtra("hostip", host.getHostIp());
+					v.getContext().startActivity(intent);
+				}
+			});
+			
+				
 		}
 		return view;
 	}
