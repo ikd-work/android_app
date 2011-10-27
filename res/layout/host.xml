@@ -14,28 +14,57 @@
 			android:layout_width="wrap_content"
 			android:layout_height="fill_parent"
 		/>
-
-		<RelativeLayout
+		<TableLayout
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_height="fill_parent"
 			android:layout_gravity="right"
 		>
-			<ImageView
-				android:id="@+id/fire_image"
-				android:layout_width="50sp"
-				android:layout_height="50sp"
+		<TableRow>
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
 				android:layout_gravity="right"
-			/>
-			<TextView
-				android:id="@+id/error_num"
-				android:layout_width="50sp"
-				android:layout_height="50sp"
-				android:layout_gravity="center"
-				android:gravity="center"
-				android:textSize="20sp"
-				android:textColor="@color/textblue"
-			/>
-		</RelativeLayout>
+			>
+				<ImageView
+					android:id="@+id/fire_image"
+					android:layout_width="70sp"
+					android:layout_height="70sp"
+					android:layout_gravity="right"
+				/>
+				<TextView
+					android:id="@+id/error_num"
+					android:layout_width="70sp"
+					android:layout_height="70sp"
+					android:layout_gravity="center"
+					android:gravity="center"
+					android:textSize="20sp"
+					android:textColor="@color/textblue"
+				/>
+			</RelativeLayout>
+			<LinearLayout
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:orientation="vertical"
+			>
+				<Button
+					android:id="@+id/trigger_button"
+					android:layout_width="wrap_content"
+					android:layout_height="35sp"
+					android:layout_gravity="right"
+					android:text="Trigger"
+					android:textSize="10sp"
+				/>
+				<Button
+					android:id="@+id/detail_button"
+					android:layout_width="wrap_content"
+					android:layout_height="35sp"
+					android:layout_gravity="right"
+					android:text="Detail"
+					android:textSize="10sp"
+				/>
+			</LinearLayout>
+			</TableRow>
 		
+		</TableLayout>
 	</TableRow>
 </TableLayout>

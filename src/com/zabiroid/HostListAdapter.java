@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,8 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 	private TextView hostNameView;
 	private ImageView triggerView;
 	private TextView errorNumView;
+	private Button triggerButton;
+	private Button detailButton;
 	
 	
 	public HostListAdapter(Context context, ArrayList<Host> objects) {
@@ -48,6 +51,8 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 			hostNameView = (TextView)view.findViewById(R.id.host_name);
 			triggerView = (ImageView)view.findViewById(R.id.fire_image);
 			errorNumView = (TextView)view.findViewById(R.id.error_num);
+			triggerButton = (Button)view.findViewById(R.id.trigger_button);
+			detailButton = (Button)view.findViewById(R.id.detail_button);
 			if (hoststatus.equals("1")) {
 				
 				hostNameView.setTextColor(Color.RED);
@@ -61,8 +66,8 @@ public class HostListAdapter extends ArrayAdapter<Host>{
 				errorNumView.setText(Integer.toString(errornum));
 				triggerView.setImageResource(R.drawable.fire_icon);
 		
-				triggerView.setOnClickListener(new View.OnClickListener(){
-				
+				//triggerView.setOnClickListener(new View.OnClickListener(){
+				triggerButton.setOnClickListener(new View.OnClickListener(){
 					public void onClick(View v) {
 						Intent intent = new Intent(v.getContext(),TriggerActivity.class);
 						intent.putExtra("hostid", hostid);
